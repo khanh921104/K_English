@@ -1,0 +1,50 @@
+CREATE DATABASE IF NOT EXISTS web_hoc_tieng_anh;
+USE web_hoc_tieng_anh;
+
+-- Bảng khách hàng
+CREATE TABLE khach_hang (
+    ma_kh INT AUTO_INCREMENT PRIMARY KEY,
+    ho_ten VARCHAR(100),
+    email VARCHAR(100),
+    so_dien_thoai VARCHAR(20),
+    ngay_dang_ky DATE DEFAULT CURRENT_DATE
+);
+
+-- Bảng tài khoản
+CREATE TABLE tai_khoan (
+    ten_dang_nhap VARCHAR(50) PRIMARY KEY,
+    mat_khau VARCHAR(100),
+    ma_kh INT,
+    FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE
+);
+
+-- Bảng khóa học
+CREATE TABLE khoa_hoc (
+    ma_khoa INT AUTO_INCREMENT PRIMARY KEY,
+    ten_khoa VARCHAR(100),
+    mo_ta TEXT,
+    cap_do ENUM('Sơ cấp', 'Trung cấp', 'Cao cấp'),
+    gia DECIMAL(10,2)
+);
+
+CREATE TABLE buoi_hoc (
+    ma_buoi INT AUTO_INCREMENT PRIMARY KEY,
+    ten_buoi VARCHAR(100),
+    noi_dung TEXT,
+    ngay_hoc DATE,
+    ma_khoa INT,
+    FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+
+-- Bảng đăng ký khóa học
+CREATE TABLE dang_ky (
+    ma_kh INT,
+    ma_khoa INT,
+    ngay_dang_ky DATE DEFAULT CURRENT_DATE,
+    PRIMARY KEY (ma_kh, ma_khoa),
+    FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE,
+    FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa) ON DELETE CASCADE
+);

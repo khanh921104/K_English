@@ -1,0 +1,192 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f5f7fa;
+    color: #1a202c;
+    line-height: 1.5;
+    padding: 32px;
+}
+
+/* Heading styles */
+h1 {
+    text-align: center;
+    color: #1565c0;
+    margin-bottom: 32px;
+    font-size: 2.25rem;
+    font-weight: 700;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    max-width: 220px;           /* Giới hạn chiều rộng tối đa cho mỗi ô */
+    overflow: hidden;           /* Ẩn phần tràn ra ngoài */
+    text-overflow: ellipsis;    /* Hiển thị dấu ... nếu tràn */
+    white-space: nowrap;        /* Không xuống dòng */
+}
+
+th {
+    background: linear-gradient(179deg, #1976d2 60%, #42a5f5 100%);
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    overflow: hidden;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Button styles */
+.btn-edit, .btn-delete {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-edit {
+    background-color: #1565c0;
+    color: #fff;
+    border: none;
+}
+
+.btn-edit:hover {
+    background-color: #0d47a1;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background-color: #dc2626;
+    color: #fff;
+    border: none;
+    margin-left: 8px;
+}
+
+.btn-delete:hover {
+    background-color: #b91c1c;
+    transform: translateY(-1px);
+}
+
+/* Form container styles */
+#editFormContainer, #addFormContainer {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Form styles */
+#editForm, #addForm {
+    background: #fff;
+    max-width: 400px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(21, 101, 192, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#editForm h2, #addForm h2 {
+    color: #1565c0;
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Form input styles */
+#editForm div, #addForm div {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    color: #1a202c;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+}
+
+input[type="text"],
+input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus {
+    outline: none;
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+}
+
+/* Form button container */
+#editForm div:last-child,
+#addForm div:last-child {
+    text-align: center;
+    margin-top: 24px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    table {
+        font-size: 0.875rem;
+    }
+
+    th, td {
+        padding: 12px;
+    }
+
+    #editForm, #addForm {
+        padding: 24px;
+    }
+}
+

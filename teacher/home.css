@@ -1,0 +1,77 @@
+.customer-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 32px auto;
+    width: 100%;
+    max-width: 1200px; /* hoặc bỏ nếu không cần */
+    border: 2px dashed red;
+}
+.customer-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.10);
+    padding: 24px 28px;
+    min-width: 260px;
+    max-width: 320px;
+    font-size: 1rem;
+    margin: 0; /* Không nên có margin tự động */
+}
+.customer-card:hover {
+    box-shadow: 0 8px 32px rgba(21,101,192,0.18);
+}
+.customer-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1565c0;
+    margin-bottom: 12px;
+}
+.customer-info span {
+    color: #333;
+}
+
+.course-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    margin: 32px 0;
+}
+
+.course-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.10);
+    padding: 24px 28px;
+    min-width: 260px;
+    max-width: 320px;
+    font-size: 1rem;
+    transition: box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.course-card:hover {
+    box-shadow: 0 8px 32px rgba(21,101,192,0.18);
+}
+
+.course-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1565c0;
+    margin-bottom: 12px;
+}
+
+.course-desc {
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.course-level,
+.course-price {
+    color: #1976d2;
+    margin-bottom: 4px;
+}

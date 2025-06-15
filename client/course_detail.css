@@ -1,0 +1,59 @@
+.course-layout {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+}
+
+.session-list {
+    flex: 7;
+    /* hoặc width: 70%; */
+    background: #f5f7fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.course-detail {
+    flex: 3;
+    /* hoặc width: 30%; */
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.10);
+    font-size: 1.1rem;
+}
+.course-title {
+    font-size: 2rem;
+    color: #1565c0;
+    margin-bottom: 18px;
+}
+.course-desc {
+    margin-bottom: 14px;
+    color: #333;
+}
+.course-level, .course-price {
+    color: #1976d2;
+    margin-bottom: 8px;
+}
+.course-image {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    margin: 18px 0;
+    display: block;
+}
+.btn-back {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 10px 22px;
+    background: #1565c0;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+.btn-back:hover {
+    background: #0d47a1;
+}
