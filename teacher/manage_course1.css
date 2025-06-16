@@ -1,0 +1,105 @@
+.add-session-form {
+            max-width: 400px;
+            margin: 24px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(21,101,192,0.10);
+            padding: 24px 28px;
+        }
+        .add-session-form label { font-weight: 500; }
+        .add-session-form input, .add-session-form textarea {
+            width: 100%; margin-bottom: 12px; padding: 8px; border-radius: 6px; border: 1px solid #90caf9;
+        }
+        .add-session-form button { margin-right: 8px; }
+        .add-session-form .btn-cancel { background: #eee; color: #333; }
+        /* CSS cho overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay-content {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(21,101,192,0.18);
+            padding: 36px 32px 28px 32px;
+            min-width: 320px;
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            animation: fadeInScale 0.3s;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.92);}
+            to   { opacity: 1; transform: scale(1);}
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 2rem;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-btn:hover {
+            color: #1565c0;
+        }
+
+        .overlay-content h3 {
+            margin-top: 0;
+            color: #1565c0;
+            text-align: center;
+            margin-bottom: 18px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .overlay-content label {
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: block;
+            color: #1976d2;
+        }
+
+        .overlay-content input,
+        .overlay-content textarea {
+            width: 100%;
+            margin-bottom: 16px;
+            padding: 10px 12px;
+            border-radius: 7px;
+            border: 1px solid #90caf9;
+            font-size: 1rem;
+            background: #f8fafc;
+            transition: border 0.2s;
+        }
+        .overlay-content input:focus,
+        .overlay-content textarea:focus {
+            border: 1.5px solid #1976d2;
+            outline: none;
+            background: #fff;
+        }
+
+        .overlay-content button {
+            padding: 10px 24px;
+            border-radius: 7px;
+            border: none;
+            background: #1976d2;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.2s;
+        }
+        .overlay-content button:hover {
+            background: #0d47a1;
+        }

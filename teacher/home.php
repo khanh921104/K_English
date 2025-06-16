@@ -32,9 +32,12 @@
     <h3>Danh sách khóa học của bạn</h3>
     <div class="course-list">
         <?php
-        // Lấy danh sách khóa học của giáo viên có mã là 1
+        // Lấy danh sách khóa học của giáo viên có mã là 1 (ma_gv = 1)
         $teacher_id = 1;
-        $sql = "SELECT ma_khoa, ten_khoa, mo_ta, cap_do, gia FROM khoa_hoc WHERE ma_giao_vien = ?";
+        $sql = "SELECT kh.ma_khoa, kh.ten_khoa, kh.mo_ta, kh.cap_do, kh.gia 
+                FROM khoa_hoc kh
+                INNER JOIN giao_vien gv ON kh.ma_gv = gv.ma_gv
+                WHERE gv.ma_gv = ?";
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param("i", $teacher_id);
         $stmt->execute();
@@ -43,7 +46,7 @@
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while($row = $result->fetch_assoc()): ?>
                 <div class="course-card">
-                    <a class="course-content" href="course_detail.php?id=<?php echo $row['ma_khoa']; ?>" style="color:inherit;text-decoration:none;font-weight:inherit;font-size:inherit;">
+                    <a class="course-content" href="manage_course.php?ma_khoa=<?php echo $row['ma_khoa']; ?>" style="color:inherit;text-decoration:none;font-weight:inherit;font-size:inherit;">
                         <h4 class="course-title"><?php echo htmlspecialchars($row['ten_khoa']); ?></h4>
                         <p class="course-desc"><?php echo htmlspecialchars($row['mo_ta']); ?></p>
                         <p class="course-level"><strong>Cấp độ:</strong> <?php echo htmlspecialchars($row['cap_do']); ?></p>

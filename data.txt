@@ -24,7 +24,11 @@ CREATE TABLE khoa_hoc (
     ten_khoa VARCHAR(100),
     mo_ta TEXT,
     cap_do ENUM('Sơ cấp', 'Trung cấp', 'Cao cấp'),
-    gia DECIMAL(10,2)
+    gia DECIMAL(10,2),
+    ma_gv INT,
+    FOREIGN KEY (ma_gv) REFERENCES giao_vien(ma_gv)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE buoi_hoc (
@@ -47,4 +51,24 @@ CREATE TABLE dang_ky (
     PRIMARY KEY (ma_kh, ma_khoa),
     FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE,
     FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa) ON DELETE CASCADE
+);
+
+CREATE TABLE tai_khoan (
+    ma_tk INT AUTO_INCREMENT PRIMARY KEY,
+    ten_dang_nhap VARCHAR(50) UNIQUE,
+    mat_khau VARCHAR(100),
+    vai_tro ENUM('GiaoVien', 'HocVien', 'Admin')
+);
+
+CREATE TABLE giao_vien (
+    ma_gv INT AUTO_INCREMENT PRIMARY KEY,
+    ho_ten VARCHAR(100),
+    email VARCHAR(100),
+    so_dien_thoai VARCHAR(20),
+    chuyen_mon VARCHAR(100),
+    trinh_do ENUM('Cử nhân', 'Thạc sĩ', 'Tiến sĩ'),
+    ma_tk INT,
+    FOREIGN KEY (ma_tk) REFERENCES tai_khoan(ma_tk)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );

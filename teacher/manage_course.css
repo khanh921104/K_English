@@ -1,0 +1,83 @@
+/* Đặt font và màu nền tổng thể */
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Tiêu đề trang */
+h2 {
+    color: #1565c0;
+    margin: 32px 0 18px 0;
+    text-align: center;
+}
+
+/* Nút thêm mới */
+.btn-add {
+    display: inline-block;
+    margin: 0 0 18px 32px;
+    padding: 8px 18px;
+    background: #1976d2;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+.btn-add:hover {
+    background: #0d47a1;
+}
+
+/* Bảng danh sách khóa học */
+table {
+    width: 90%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(21,101,192,0.08);
+}
+th, td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+th {
+    background: #1976d2;
+    color: #fff;
+    font-weight: 600;
+}
+tr:hover {
+    background: #f0f7ff;
+}
+
+/* Nút thao tác */
+.btn-edit, .btn-delete {
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-right: 6px;
+}
+.btn-edit {
+    background: #42a5f5;
+    color: #fff;
+}
+.btn-edit:hover {
+    background: #1976d2;
+}
+.btn-delete {
+    background: #ef5350;
+    color: #fff;
+}
+.btn-delete:hover {
+    background: #b71c1c;
+}
+.add-session-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+}
