@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Vui lòng nhập đầy đủ thông tin.";
     } else {
         // Truy vấn người dùng
-        $query = "SELECT * FROM tai_khoan WHERE ten_dang_nhap = ?";
+        $query = "SELECT * FROM tai_khoan_giao_vien WHERE ten_dang_nhap = ?";
         $stmt = $mysqli->prepare($query);
         if ($stmt) {
             $stmt->bind_param("s", $username);

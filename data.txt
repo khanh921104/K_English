@@ -42,6 +42,18 @@ CREATE TABLE buoi_hoc (
         ON UPDATE CASCADE
 );
 
+CREATE TABLE video_bai_giang (
+    ma_video INT AUTO_INCREMENT PRIMARY KEY,
+    ten_video VARCHAR(255),
+    duong_dan_video VARCHAR(500),
+    mo_ta TEXT,
+    thoi_luong INT, -- tính bằng phút
+    ma_buoi INT,
+    FOREIGN KEY (ma_buoi) REFERENCES buoi_hoc(ma_buoi)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 
 -- Bảng đăng ký khóa học
 CREATE TABLE dang_ky (
@@ -72,3 +84,15 @@ CREATE TABLE giao_vien (
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
+
+UPDATE buoi_hoc bh
+JOIN video_bai_giang vbg ON bh.ma_buoi = vbg.ma_buoi
+SET bh.thoi_luong = vbg.thoi_luong;
+
+UPDATE buoi_hoc bh
+JOIN (
+    SELECT ma_buoi, SUM(thoi_luong) AS tong_thoi_luong
+    FROM video_bai_giang
+    GROUP BY ma_buoi
+) AS video_sum ON bh.ma_buoi = video_sum.ma_buoi
+SET bh.thoi_luong = video_sum.tong_thoi_luong;

@@ -13,6 +13,19 @@ h2 {
     text-align: center;
 }
 
+.manage_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1976d2;
+    
+}
+
+.manage_header h1 {
+    
+    color: #fff;
+}
+
 /* Nút thêm mới */
 .btn-add {
     display: inline-block;
@@ -27,6 +40,51 @@ h2 {
 }
 .btn-add:hover {
     background: #0d47a1;
+}
+
+/* Nút quay về trang chủ */
+.btn-back-home {
+    display: inline-block;
+    margin: 18px 0 18px 32px;
+    padding: 8px 20px;
+    background: #f5f7fa;
+    color: #1565c0;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.08rem;
+    border: 1px solid #90caf9;
+    box-shadow: 0 2px 8px rgba(21,101,192,0.07);
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn-back-home:hover {
+    background: #bbdefb;
+    color: #0d47a1;
+    border: 1.5px solid #1976d2;
+}
+
+/* Đảm bảo bảng không vượt quá vùng chứa */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Áp dụng cho table */
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Cố định chiều rộng và cắt nội dung dài cho 2 cột */
+th.chu-de, td.chu-de,
+th.ghi-chu, td.ghi-chu {
+    width: 180px;
+    max-width: 180px;
+    min-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Bảng danh sách khóa học */

@@ -6,8 +6,8 @@
         <nav>
             <ul>
                 <li><a href="manage_course.php">Khóa học</a></li>
-                <li><a href="search.php">Khóa học</a></li>
-                <li><a href="login.php">Tài khoản</a></li>
+                
+                <li><a href="teacher_information.php">Tài khoản</a></li>
             </ul>
         </nav>
         
