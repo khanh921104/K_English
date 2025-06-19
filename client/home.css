@@ -71,7 +71,13 @@
 }
 
 .course-level,
-.course-price {
+.course-registered {
     color: #1976d2;
+    margin-bottom: 4px;
+}
+
+.course-price{
+    color: #f03c8d;
+    font-weight: 500;
     margin-bottom: 4px;
 }

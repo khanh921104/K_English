@@ -7,13 +7,13 @@
             <ul>
                 
                 <li><a href="search.php">Khóa học</a></li>
-                <li><a href="login.php">Tài khoản</a></li>
+                <li><a href="client_information.php">Tài khoản</a></li>
             </ul>
         </nav>
         
         
     </header>
-    <script>
+    <!-- <script>
 const starsContainer = document.querySelector('.stars');
 const numStars = 60;
 const stars = [];
@@ -42,5 +42,5 @@ function animateStars() {
     requestAnimationFrame(animateStars);
 }
 animateStars();
-</script>
+</script> -->
     

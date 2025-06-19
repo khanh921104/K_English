@@ -10,7 +10,7 @@
     <?php include 'header.php'; ?>
     <?php
     include '../db.php';
-    $sql = "SELECT ma_khoa, ten_khoa, mo_ta, cap_do, gia FROM khoa_hoc";
+    $sql = "SELECT ma_khoa, ten_khoa, mo_ta, cap_do, so_luong_dang_ky, gia FROM khoa_hoc";
     $result = $mysqli->query($sql); // đổi từ $conn → $mysqli
     ?>
 
@@ -40,6 +40,7 @@
                         <h4 class="course-title"><?php echo htmlspecialchars($row['ten_khoa']); ?></h4>
                         <p class="course-desc"><?php echo htmlspecialchars($row['mo_ta']); ?></p>
                         <p class="course-level"><strong>Cấp độ:</strong> <?php echo htmlspecialchars($row['cap_do']); ?></p>
+                        <p class="course-registered"><strong>Số lượng đã đăng ký:</strong> <?php echo htmlspecialchars($row['so_luong_dang_ky']); ?></p>
                         <p class="course-price"><strong>Giá:</strong> <?php echo number_format($row['gia'], 0, ',', '.'); ?> VNĐ</p>
                     </a>
                 </div>

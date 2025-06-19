@@ -10,13 +10,6 @@ CREATE TABLE khach_hang (
     ngay_dang_ky DATE DEFAULT CURRENT_DATE
 );
 
--- Bảng tài khoản
-CREATE TABLE tai_khoan (
-    ten_dang_nhap VARCHAR(50) PRIMARY KEY,
-    mat_khau VARCHAR(100),
-    ma_kh INT,
-    FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE
-);
 
 -- Bảng khóa học
 CREATE TABLE khoa_hoc (
@@ -25,6 +18,7 @@ CREATE TABLE khoa_hoc (
     mo_ta TEXT,
     cap_do ENUM('Sơ cấp', 'Trung cấp', 'Cao cấp'),
     gia DECIMAL(10,2),
+    so_luong_dang_ky INT DEFAULT 0,
     ma_gv INT,
     FOREIGN KEY (ma_gv) REFERENCES giao_vien(ma_gv)
         ON DELETE SET NULL
@@ -65,12 +59,21 @@ CREATE TABLE dang_ky (
     FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa) ON DELETE CASCADE
 );
 
+CREATE TABLE phan_quyen (
+    ma_quyen INT AUTO_INCREMENT PRIMARY KEY,
+    ten_quyen VARCHAR(50) UNIQUE -- Ví dụ: 'admin', 'giao_vien', 'hoc_vien'
+);
+
 CREATE TABLE tai_khoan (
     ma_tk INT AUTO_INCREMENT PRIMARY KEY,
     ten_dang_nhap VARCHAR(50) UNIQUE,
     mat_khau VARCHAR(100),
-    vai_tro ENUM('GiaoVien', 'HocVien', 'Admin')
+    ma_quyen INT,
+    FOREIGN KEY (ma_quyen) REFERENCES phan_quyen(ma_quyen)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );
+
 
 CREATE TABLE giao_vien (
     ma_gv INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,14 +88,29 @@ CREATE TABLE giao_vien (
         ON UPDATE CASCADE
 );
 
-UPDATE buoi_hoc bh
-JOIN video_bai_giang vbg ON bh.ma_buoi = vbg.ma_buoi
-SET bh.thoi_luong = vbg.thoi_luong;
+DELIMITER $$
 
-UPDATE buoi_hoc bh
-JOIN (
-    SELECT ma_buoi, SUM(thoi_luong) AS tong_thoi_luong
-    FROM video_bai_giang
-    GROUP BY ma_buoi
-) AS video_sum ON bh.ma_buoi = video_sum.ma_buoi
-SET bh.thoi_luong = video_sum.tong_thoi_luong;
+CREATE TRIGGER after_insert_dang_ky
+AFTER INSERT ON dang_ky
+FOR EACH ROW
+BEGIN
+    UPDATE khoa_hoc
+    SET so_luong_dang_ky = so_luong_dang_ky + 1
+    WHERE ma_khoa = NEW.ma_khoa;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER after_delete_dang_ky
+AFTER DELETE ON dang_ky
+FOR EACH ROW
+BEGIN
+    UPDATE khoa_hoc
+    SET so_luong_dang_ky = so_luong_dang_ky - 1
+    WHERE ma_khoa = OLD.ma_khoa;
+END$$
+
+DELIMITER ;
+
