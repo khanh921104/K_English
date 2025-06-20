@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 2) {
+    // Nếu chưa đăng nhập hoặc không phải giáo viên, chuyển hướng về trang đăng nhập
+    header("Location: ../login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +18,8 @@
     <?php 
     include '../db.php';
     include 'header.php';
-    $ma_gv = isset($_GET['ma_gv']) ? intval($_GET['ma_gv']) : 1; // Mặc định là 1 nếu không có trên URL
-    $sql = "SELECT * FROM giao_vien WHERE ma_gv = $ma_gv";
+    $ma_kh = isset($_SESSION['ma_kh']) ? intval($_SESSION['ma_kh']) : 0;
+    $sql = "SELECT * FROM giao_vien WHERE ma_gv = (SELECT ma_gv FROM tai_khoan WHERE ma_kh = $ma_kh LIMIT 1)";
     $result = $mysqli->query($sql);
     $gv = $result ? $result->fetch_assoc() : null;
     ?>
@@ -43,6 +51,6 @@
             <p style="text-align:center;color:red;">Không tìm thấy thông tin giáo viên.</p>
         <?php endif; ?>
     </main>
-    <a href="login.php" class="btn-logout">Đăng xuất</a>
+    <a href="../login.php" class="btn-logout">Đăng xuất</a>
 </body>
 </html>

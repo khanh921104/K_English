@@ -1,6 +1,13 @@
 <?php
 include '../db.php';
 
+session_start();
+if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 2) {
+    // Nếu chưa đăng nhập hoặc không phải giáo viên, chuyển hướng về trang đăng nhập
+    header("Location: ../login.php");
+    exit;
+}
+
 // Lấy mã khóa học từ URL
 $ma_khoa = isset($_GET['ma_khoa']) ? intval($_GET['ma_khoa']) : 0;
 

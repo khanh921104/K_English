@@ -1,12 +1,18 @@
 <?php
 include '../db.php';
-session_start(); // Nếu bạn dùng session để lưu thông tin học viên
 
+
+session_start();
+if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 3) {
+    // Nếu chưa đăng nhập hoặc không phải giáo viên, chuyển hướng về trang đăng nhập
+    header("Location: ../login.php");
+    exit;
+}
 
 
 // Lấy id khóa học từ URL
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$ma_kh = isset($_GET['ma_kh']) ? intval($_GET['ma_kh']) : 1;
+$ma_kh = isset($_SESSION['ma_kh']) ? intval($_SESSION['ma_kh']) : 0;
 
 // Truy vấn thông tin khóa học
 $sql = "SELECT * FROM khoa_hoc WHERE ma_khoa = $id";
@@ -75,7 +81,9 @@ if (isset($_POST['dang_ky']) && $ma_kh && $id) {
                         <div class="sessions-flex">
                             <?php while ($session = $result_sessions->fetch_assoc()): ?>
                                 <div class="session-item">
-                                    <span class="session-title"><?php echo htmlspecialchars($session['ten_buoi']); ?></span>
+                                    <a href="video.php?id=<?php echo urlencode($session['ma_buoi']); ?>" class="session-title">
+                                        <?php echo htmlspecialchars($session['ten_buoi']); ?>
+                                    </a>
                                     <span class="session-content"><?php echo nl2br(htmlspecialchars($session['noi_dung'])); ?></span>
                                 </div>
                             <?php endwhile; ?>

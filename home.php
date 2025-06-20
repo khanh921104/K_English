@@ -20,13 +20,13 @@
         
         
     </header>
-    <div class="banner">
+    <!-- <div class="banner">
         <div class="banner-slider">
             <img class="banner-img active" src="https://cf.shopee.vn/file/sg-11134258-7rasy-mav18v0lur1ybd_xhdpi" alt="Banner 1">
             <img class="banner-img" src="https://i.ytimg.com/vi/knW7-x7Y7RE/maxresdefault.jpg" alt="Banner 2">
             <img class="banner-img" src="https://i.ytimg.com/vi/FN7ALfpGxiI/maxresdefault.jpg" alt="Banner 3">
         </div>
-    </div>
+    </div> -->
     <main>
         <h2>Chào mừng đến với trang chủ!</h2>
         <p>Đây là nơi bạn có thể quản lý khách hàng, sản phẩm và đơn hàng.</p>
@@ -35,7 +35,7 @@
     <footer>
         <p>&copy; 2025 Lê Công Khánh. Tất cả quyền được bảo lưu.</p>
     </footer>
-    <script>
+    <!-- <script>
 const starsContainer = document.querySelector('.stars');
 const numStars = 60;
 const stars = [];
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showSlide(next);
     }, 3500);
 });
-</script>
+</script> -->
 
 
 </body>

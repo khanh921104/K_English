@@ -2,11 +2,11 @@
 <!-- filepath: c:\xampp\htdocs\K_English\admin\header.php -->
 <header>
         <div class="stars"></div>
-        <h1><a href="http://localhost:8080/K_English/home.php">K-English</a></h1>
+        <h1><a href="home.php">K-English</a></h1>
         <nav>
             <ul>
                 
-                <li><a href="search.php">Khóa học</a></li>
+                <li><a href="search.php">Tìm khóa học</a></li>
                 <li><a href="client_information.php">Tài khoản</a></li>
             </ul>
         </nav>

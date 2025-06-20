@@ -1,3 +1,12 @@
+<?php
+session_start();
+if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 1) {
+    // Nếu chưa đăng nhập hoặc không phải admin, chuyển hướng về trang đăng nhập
+    header("Location: login.php");
+    conslole.log("Bạn không có quyền truy cập trang này.");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

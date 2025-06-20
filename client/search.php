@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 3) {
+    // Nếu chưa đăng nhập hoặc không phải giáo viên, chuyển hướng về trang đăng nhập
+    header("Location: ../login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +33,8 @@
 
     <!-- Thanh tìm kiếm -->
     <form class="search-bar" method="get" action="">
+        <a href="home.php" class="btn-back">⫷</a>
+        
         <input type="text" name="q" placeholder="Tìm kiếm khóa học..." value="<?php echo htmlspecialchars($search); ?>">
         <button type="submit">Tìm</button>
     </form>

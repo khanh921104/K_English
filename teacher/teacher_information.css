@@ -45,7 +45,7 @@ main{
 
 .btn-logout {
     display: inline-block;
-    float: center;
+    /* float: center; */
     margin: 18px 32px 0 0;
     padding: 8px 20px;
     background: #ef5350;

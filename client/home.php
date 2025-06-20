@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 3) {
+    // Nếu chưa đăng nhập hoặc không phải giáo viên, chuyển hướng về trang đăng nhập
+    header("Location: ../login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,9 +19,8 @@
     <?php
     include '../db.php';
     $sql = "SELECT ma_khoa, ten_khoa, mo_ta, cap_do, so_luong_dang_ky, gia FROM khoa_hoc";
-    $result = $mysqli->query($sql); // đổi từ $conn → $mysqli
+    $result = $mysqli->query($sql);
     ?>
-
 
     <div class="banner">
         <div class="banner-slider">
@@ -27,28 +34,62 @@
         <h2>Chào mừng đến với trang chủ!</h2>
         <p>Đây là nơi bạn có thể quản lý khách hàng, sản phẩm và đơn hàng.</p>
      
-
         <div class="courses">
-    <h3>Danh sách khóa học</h3>
-    <div class="course-list">
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while($row = $result->fetch_assoc()): ?>
-                <div class="course-card">
-                    <a class="course-content" href="course_detail.php?id=<?php echo $row['ma_khoa']; ?>" style="color:inherit;text-decoration:none;font-weight:inherit;font-size:inherit;">
-                    <!-- <img src="https://via.placeholder.com/200x150.png?text=Khoa+Hoc" alt="Ảnh khóa học" class="course-image"> -->
-                    
-                        <h4 class="course-title"><?php echo htmlspecialchars($row['ten_khoa']); ?></h4>
-                        <p class="course-desc"><?php echo htmlspecialchars($row['mo_ta']); ?></p>
-                        <p class="course-level"><strong>Cấp độ:</strong> <?php echo htmlspecialchars($row['cap_do']); ?></p>
-                        <p class="course-registered"><strong>Số lượng đã đăng ký:</strong> <?php echo htmlspecialchars($row['so_luong_dang_ky']); ?></p>
-                        <p class="course-price"><strong>Giá:</strong> <?php echo number_format($row['gia'], 0, ',', '.'); ?> VNĐ</p>
-                    </a>
-                </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>Chưa có khóa học nào.</p>
-        <?php endif; ?>
-    </div>
+            <h3>Danh sách khóa học</h3>
+            <div class="course-list" id="course-list">
+                <?php
+                $maxVisible = 8;
+                $index = 0;
+                $courseHtml = '';
+                if ($result && $result->num_rows > 0):
+                    while($row = $result->fetch_assoc()):
+                        $hiddenClass = ($index >= $maxVisible) ? 'hidden-course' : '';
+                        $courseHtml .= '<div class="course-card ' . $hiddenClass . '">
+                            <a class="course-content" href="course_detail.php?id=' . $row['ma_khoa'] . '" style="color:inherit;text-decoration:none;font-weight:inherit;font-size:inherit;">
+                                <h4 class="course-title">' . htmlspecialchars($row['ten_khoa']) . '</h4>
+                                <p class="course-desc">' . htmlspecialchars($row['mo_ta']) . '</p>
+                                <p class="course-level"><strong>Cấp độ:</strong> ' . htmlspecialchars($row['cap_do']) . '</p>
+                                <p class="course-registered"><strong>Số lượng đã đăng ký:</strong> ' . htmlspecialchars($row['so_luong_dang_ky']) . '</p>
+                                <p class="course-price"><strong>Giá:</strong> ' . number_format($row['gia'], 0, ',', '.') . ' VNĐ</p>
+                            </a>
+                        </div>';
+                        $index++;
+                    endwhile;
+                    echo $courseHtml;
+                else:
+                ?>
+                    <p>Chưa có khóa học nào.</p>
+                <?php endif; ?>
+            </div>
+            <?php if ($index > $maxVisible): ?>
+                <button id="toggle-courses-btn" style="margin-top:15px;">v</button>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .hidden-course {
+            display: none;
+        }
+        </style>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('toggle-courses-btn');
+            if (!btn) return;
+            let expanded = false;
+            btn.addEventListener('click', function () {
+                const hiddenCourses = document.querySelectorAll('.hidden-course');
+                if (!expanded) {
+                    hiddenCourses.forEach(el => el.style.display = 'block');
+                    btn.textContent = '^';
+                    expanded = true;
+                } else {
+                    hiddenCourses.forEach(el => el.style.display = 'none');
+                    btn.textContent = 'v';
+                    expanded = false;
+                }
+            });
+        });
+        </script>
 </div>
 
         

@@ -21,7 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_start();
                 $_SESSION['username'] = $username;
                 $_SESSION['ma_kh'] = $user['ma_kh'];
-                header("Location: home.php");
+                $_SESSION['ma_quyen'] = $user['ma_quyen']; // Giả sử cột quyền là 'ma_quyen'
+
+                // Điều hướng theo quyền
+                if ($user['ma_quyen'] == 1) {
+                    header("Location: home.php");
+                } elseif ($user['ma_quyen'] == 2) {
+                    header("Location: teacher/home.php");
+                } elseif ($user['ma_quyen'] == 3) {
+                    header("Location: client/home.php");
+                } else {
+                    $error = "Tài khoản không có quyền truy cập hợp lệ!";
+                }
                 exit;
             } else {
                 $error = "Sai mật khẩu!";

@@ -68,4 +68,18 @@
     color: #1976d2;
     margin-bottom: 4px;
 }
+.btn-back {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 10px 22px;
+    background: #1565c0;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
 
+.btn-back:hover {
+    background: #0d47a1;
+}

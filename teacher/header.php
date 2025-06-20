@@ -2,7 +2,7 @@
 <!-- filepath: c:\xampp\htdocs\K_English\admin\header.php -->
 <header>
         <div class="stars"></div>
-        <h1><a href="http://localhost:8080/K_English/home.php">K-English</a></h1>
+        <h1><a href="home.php">K-English</a></h1>
         <nav>
             <ul>
                 <li><a href="manage_course.php">Khóa học</a></li>
@@ -13,7 +13,7 @@
         
         
     </header>
-    <script>
+    <!-- <script>
 const starsContainer = document.querySelector('.stars');
 const numStars = 60;
 const stars = [];
@@ -42,5 +42,5 @@ function animateStars() {
     requestAnimationFrame(animateStars);
 }
 animateStars();
-</script>
+</script> -->
     
