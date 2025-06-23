@@ -16,6 +16,27 @@ $khoa_sql = "SELECT * FROM khoa_hoc WHERE ma_khoa = $ma_khoa";
 $khoa_result = $mysqli->query($khoa_sql);
 $khoa = $khoa_result ? $khoa_result->fetch_assoc() : null;
 
+// Xử lý cập nhật cấp độ và giá khóa học
+if (isset($_POST['update_course_info'])) {
+    $cap_do = trim($_POST['cap_do']);
+    $gia = floatval($_POST['gia']);
+    if ($cap_do && $gia >= 0) {
+        $stmt = $mysqli->prepare("UPDATE khoa_hoc SET cap_do=?, gia=? WHERE ma_khoa=?");
+        $stmt->bind_param('sdi', $cap_do, $gia, $ma_khoa);
+        if ($stmt->execute()) {
+            // Cập nhật lại thông tin khóa học sau khi sửa
+            $khoa_sql = "SELECT * FROM khoa_hoc WHERE ma_khoa = $ma_khoa";
+            $khoa_result = $mysqli->query($khoa_sql);
+            $khoa = $khoa_result ? $khoa_result->fetch_assoc() : null;
+            $thong_bao = "Cập nhật thành công!";
+        } else {
+            $thong_bao = "Lỗi khi cập nhật: " . $mysqli->error;
+        }
+    } else {
+        $thong_bao = "Vui lòng nhập đầy đủ thông tin hợp lệ!";
+    }
+}
+
 // Xử lý thêm buổi học
 $show_form = isset($_POST['show_add_form']) || isset($_POST['add_session']);
 $thong_bao = '';
@@ -183,7 +204,20 @@ $result = $mysqli->query($sql);
         <h2>Không tìm thấy thông tin khóa học.</h2>
     <?php endif; ?>
 
-    
+    <?php if (!empty($thong_bao)): ?>
+    <div class="alert-message"><?php echo htmlspecialchars($thong_bao); ?></div>
+    <?php endif; ?>
+    <div class="edit-course-info" style="max-width:420px;margin:18px 0 28px 0;padding:18px 24px;background:#f5f7fa;border-radius:10px;">
+        <form method="post" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
+            <label style="font-weight:500;">Cấp độ:
+                <input type="text" name="cap_do" value="<?php echo htmlspecialchars($khoa['cap_do'] ?? ''); ?>" required style="margin-left:8px;padding:6px 10px;border-radius:6px;border:1px solid #90caf9;">
+            </label>
+            <label style="font-weight:500;">Giá:
+                <input type="number" name="gia" value="<?php echo htmlspecialchars($khoa['gia'] ?? ''); ?>" min="0" step="1000" required style="margin-left:8px;padding:6px 10px;border-radius:6px;border:1px solid #90caf9;">
+            </label>
+            <button type="submit" name="update_course_info" style="padding:8px 18px;border-radius:6px;background:#1976d2;color:#fff;border:none;font-weight:500;cursor:pointer;">Lưu</button>
+        </form>
+    </div>
 
     <script>
         function showAddSessionForm() {
