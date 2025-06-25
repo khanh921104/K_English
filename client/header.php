@@ -5,7 +5,7 @@
         <h1><a href="home.php">K-English</a></h1>
         <nav>
             <ul>
-                
+                <li><a href="subscribed.php">Tìm khóa học</a></li>
                 <li><a href="search.php">Tìm khóa học</a></li>
                 <li><a href="client_information.php">Tài khoản</a></li>
             </ul>

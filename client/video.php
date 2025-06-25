@@ -2,13 +2,13 @@
 // Kết nối CSDL
 $mysqli = new mysqli('localhost:3307', 'root', '', 'web_hoc_tieng_anh');
 
-// Lấy id buổi học từ URL (?ma_buoi=...)
-$ma_buoi = isset($_GET['ma_buoi']) ? intval($_GET['ma_buoi']) : 0;
+// Lấy id buổi học từ URL (?id=...)
+$ma_buoi = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Truy vấn lấy link video từ bảng buoi_hoc
+// Truy vấn lấy link video từ bảng video_bai_giang
 $duong_dan_video = '';
 if ($ma_buoi > 0) {
-    $sql = "SELECT duong_dan_video FROM buoi_hoc WHERE ma_buoi = $ma_buoi LIMIT 1";
+    $sql = "SELECT duong_dan_video FROM video_bai_giang WHERE ma_buoi = $ma_buoi LIMIT 1";
     $result = $mysqli->query($sql);
     if ($result && $row = $result->fetch_assoc()) {
         $duong_dan_video = $row['duong_dan_video'];
@@ -57,6 +57,8 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
     <p>Không tìm thấy video hợp lệ.</p>
 <?php endif; ?>
     <a href="javascript:history.back()" class="btn-back">&lt; Quay lại</a>
+    <!-- Nút làm bài tập cho buổi học hiện tại -->
+    <a href="home_work.php?ma_buoi=<?php echo urlencode($ma_buoi); ?>" class="btn-homework">Làm bài tập</a>
     </div>
 </body>
 </html>

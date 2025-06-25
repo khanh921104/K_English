@@ -5,6 +5,7 @@ if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 2) {
     header("Location: ../login.php");
     exit;
 }
+$ma_kh = isset($_SESSION['ma_kh']) ? intval($_SESSION['ma_kh']) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,12 +43,12 @@ if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 2) {
         <?php
         // Lấy danh sách khóa học của giáo viên có mã là 1 (ma_gv = 1)
         $teacher_id = 1;
-        $sql = "SELECT kh.ma_khoa, kh.ten_khoa, kh.mo_ta, kh.cap_do, kh.gia 
+        $sql = "SELECT kh.ma_khoa, kh.ten_khoa, kh.mo_ta, kh.cap_do, kh.gia
                 FROM khoa_hoc kh
-                INNER JOIN giao_vien gv ON kh.ma_gv = gv.ma_gv
-                WHERE gv.ma_gv = ?";
+                INNER JOIN giao_vien_tao_khoa_hoc gvkh ON kh.ma_khoa = gvkh.ma_khoa
+                WHERE gvkh.ma_kh = ?";
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param("i", $teacher_id);
+        $stmt->bind_param('i', $ma_kh);
         $stmt->execute();
         $result = $stmt->get_result();
         ?>

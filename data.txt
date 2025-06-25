@@ -87,6 +87,70 @@ CREATE TABLE giao_vien_tao_khoa_hoc  (
         ON UPDATE CASCADE
 );
 
+CREATE TABLE bai_tap (
+    ma_bai INT AUTO_INCREMENT PRIMARY KEY,
+    ten_bai VARCHAR(255),
+    noi_dung TEXT,
+    ma_buoi INT,
+    FOREIGN KEY (ma_buoi) REFERENCES buoi_hoc(ma_buoi)
+);
+
+CREATE TABLE lam_bai_tap( 
+    ma_bai INT,
+    ma_kh INT,
+    dap_an TEXT,
+    diem FLOAT,
+    thoi_gian_nop DATETIME DEFAULT CURRENT_TIMESTAMP,
+    trang_thai ENUM('Chưa hoàn thành', 'Hoàn thành') DEFAULT 'Chưa hoàn thành',
+    PRIMARY KEY (ma_bai, ma_kh),
+    FOREIGN KEY (ma_bai) REFERENCES bai_tap(ma_bai)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE lich_su_hoc (
+    ma_kh INT,                            -- Mã người học
+    ma_video INT,                         -- Video học
+    thoi_gian_xem DATETIME DEFAULT CURRENT_TIMESTAMP, -- Lần đầu xem
+    so_phut_da_xem INT DEFAULT 0,         -- Số phút đã xem
+    da_hoan_thanh BOOLEAN DEFAULT FALSE,  -- Đánh dấu hoàn thành video
+    lam_xong_bai_tap BOOLEAN DEFAULT FALSE, -- Nếu làm hết bài tập thì được tính hoàn thành buổi học
+    PRIMARY KEY (ma_kh, ma_video),
+    FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE,
+    FOREIGN KEY (ma_video) REFERENCES video_bai_giang(ma_video) ON DELETE CASCADE
+);
+
+DELIMITER $$
+
+CREATE TRIGGER cap_nhat_trang_thai_bai_tap
+BEFORE INSERT ON lam_bai_tap
+FOR EACH ROW
+BEGIN
+    IF NEW.diem >= 7 THEN
+        SET NEW.trang_thai = 'Hoàn thành';
+    ELSE
+        SET NEW.trang_thai = 'Chưa hoàn thành';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER cap_nhat_trang_thai_buoi
+BEFORE UPDATE ON lich_su_hoc
+FOR EACH ROW
+BEGIN
+    IF (NEW.da_hoan_thanh_video = TRUE OR NEW.lam_xong_bai_tap = TRUE) THEN
+        SET NEW.da_hoan_thanh_buoi = TRUE;
+    END IF;
+END$$
+
+DELIMITER ;
+
 
 DELIMITER $$
 

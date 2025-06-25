@@ -7,8 +7,8 @@ if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 2) {
 }
 include '../db.php';
 
-$ma_gv = isset($_SESSION['ma_gv']) ? intval($_SESSION['ma_gv']) : 0;
 $thong_bao = '';
+$ma_kh = isset($_SESSION['ma_kh']) ? intval($_SESSION['ma_kh']) : 0; // mã giáo viên (theo thiết kế của bạn)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ten_khoa = trim($_POST['ten_khoa']);
@@ -16,10 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cap_do = trim($_POST['cap_do']);
     $gia = floatval($_POST['gia']);
 
-    if ($ten_khoa && $cap_do && $gia >= 0 && $ma_gv > 0) {
-        $stmt = $mysqli->prepare("INSERT INTO khoa_hoc (ten_khoa, mo_ta, cap_do, gia, ma_gv) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param('sssdi', $ten_khoa, $mo_ta, $cap_do, $gia, $ma_gv);
+    if ($ten_khoa && $cap_do && $gia >= 0 && $ma_kh > 0) {
+        // 1. Thêm vào bảng khoa_hoc
+        $stmt = $mysqli->prepare("INSERT INTO khoa_hoc (ten_khoa, mo_ta, cap_do, gia) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('sssd', $ten_khoa, $mo_ta, $cap_do, $gia);
         if ($stmt->execute()) {
+            $ma_khoa = $stmt->insert_id; // Lấy mã khóa học vừa tạo
+
+            // 2. Thêm vào bảng giao_vien_tao_khoa_hoc
+            $stmt2 = $mysqli->prepare("INSERT INTO giao_vien_tao_khoa_hoc (ma_kh, ma_khoa) VALUES (?, ?)");
+            $stmt2->bind_param('ii', $ma_kh, $ma_khoa);
+            $stmt2->execute();
+
             header("Location: home.php");
             exit;
         } else {

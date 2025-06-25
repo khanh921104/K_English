@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header("Location: admin/home.php");
                     exit;
                 } elseif ($user['ma_quyen'] == 2) { // Giáo viên
-                    $_SESSION['ma_gv'] = $user['ma_gv'];
+                    $_SESSION['ma_kh'] = $user['ma_kh'];
                     header("Location: teacher/home.php");
                     exit;
                 } elseif ($user['ma_quyen'] == 3) { // Học viên
