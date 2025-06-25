@@ -58,12 +58,22 @@ if (isset($_POST['dang_ky']) && $ma_kh && $id) {
                     <?php if (!empty($row['hinh_anh'])): ?>
                         <img src="<?php echo htmlspecialchars($row['hinh_anh']); ?>" alt="Ảnh khóa học" class="course-image">
                     <?php endif; ?>
-                    <div class="course-actions">
-                        <a href="home.php" class="btn-back">⫷</a>
-                        <form method="post">
-                            <button type="submit" name="dang_ky" class="btn-enroll">Đăng ký khóa học</button>
-                        </form>
-                    </div>
+                    <?php
+// Kiểm tra đã đăng ký chưa
+$da_dang_ky = false;
+if ($ma_kh && $id) {
+    $check = $mysqli->query("SELECT * FROM dang_ky WHERE ma_khoa = $id AND ma_kh = $ma_kh");
+    if ($check && $check->num_rows > 0) {
+        $da_dang_ky = true;
+    }
+}
+?>
+<div class="course-actions">
+    <a href="home.php" class="btn-back">⫷</a>
+    <form method="post">
+        <button type="submit" name="dang_ky" class="btn-enroll">Đăng ký khóa học</button>
+    </form>
+</div>
                     <?php if (!empty($thong_bao)): ?>
     <div class="alert-message">
         <?php echo htmlspecialchars($thong_bao); ?>

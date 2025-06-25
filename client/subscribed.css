@@ -1,0 +1,73 @@
+/* Reset mặc định */
+body, h1, h2, ul, li, a {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Toàn bộ trang */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f7fb;
+    color: #333;
+    padding: 40px 20px;
+}
+
+/* Tiêu đề trang */
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 40px;
+}
+
+/* Danh sách khóa học */
+.course-list {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.course-list h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #2980b9;
+    border-bottom: 2px solid #dce1e7;
+    padding-bottom: 6px;
+}
+
+.course-list ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.course-list li {
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background-color: #f1f6fb;
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+}
+
+.course-list li:hover {
+    background-color: #fa7ba9;
+}
+
+.course-list a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 16px;
+    display: block;
+    transition: color 0.2s;
+}
+
+.course-list li:hover a,
+.course-list li:hover span {
+    color: #fff;
+    transition: color 0.2s;
+}

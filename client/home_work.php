@@ -43,6 +43,7 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="home_work.css">
 </head>
 <body>
+    <?php include 'header.php'; ?>
     <div class="homework-container">
         <h2>Bài tập của buổi học</h2>
         <?php if (!empty($thong_bao)): ?>

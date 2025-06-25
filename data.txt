@@ -54,6 +54,7 @@ CREATE TABLE dang_ky (
     ma_kh INT,
     ma_khoa INT,
     ngay_dang_ky DATE DEFAULT CURRENT_DATE,
+    trang_thai ENUM('enrolled', 'completed') DEFAULT 'enrolled',
     PRIMARY KEY (ma_kh, ma_khoa),
     FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE,
     FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa) ON DELETE CASCADE

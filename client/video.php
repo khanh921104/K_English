@@ -25,6 +25,7 @@ $mysqli->close();
     <link rel="stylesheet" href="video.css">
 </head>
 <body>
+    <?php include 'header.php'; ?>
     <div class="video-container">
         <?php if ($duong_dan_video): ?>
             <p>Đường dẫn video: <?php echo htmlspecialchars($duong_dan_video); ?></p>

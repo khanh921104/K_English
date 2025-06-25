@@ -1,5 +1,4 @@
-
-    body {
+body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #f0f4f8;
         margin: 0;
@@ -8,11 +7,11 @@
 
     .report-container {
         max-width: 900px;
-        margin: 40px auto;
+        /* margin: 0px auto; */
         background: #ffffff;
         border-radius: 14px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        padding: 36px 32px;
+        
         animation: fadeIn 0.5s ease-in-out;
     }
 
@@ -90,3 +89,11 @@
         font-weight: bold;
     }
 
+    .course-list li.completed {
+        background: #fa7ba9 !important;
+        color: #fff;
+    }
+    .course-list li.completed a,
+    .course-list li.completed span {
+        color: #fff !important;
+    }
