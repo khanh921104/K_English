@@ -45,7 +45,7 @@ if (isset($_POST['update_info'])) {
     <?php if ($gv): ?>
         <div class="tab">
             <a>Thông tin</a>
-            <a>Thống kê</a>
+            <a href="report.php">Thống kê</a>
         </div>
         <div class="teacher-info">
             <?php if (empty($show_edit)): ?>

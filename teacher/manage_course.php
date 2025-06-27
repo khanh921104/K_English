@@ -37,18 +37,28 @@ if (isset($_POST['update_course_info'])) {
     }
 }
 
-// Xử lý thêm buổi học
+// Xử lý thêm buổi học và video bài giảng đầu tiên
 $show_form = isset($_POST['show_add_form']) || isset($_POST['add_session']);
 $thong_bao = '';
 if (isset($_POST['add_session'])) {
     $ten_buoi = trim($_POST['ten_buoi']);
     $noi_dung = trim($_POST['noi_dung']);
-    $thoi_luong = intval($_POST['thoi_luong']);
-    if ($ten_buoi && $thoi_luong) {
-        $stmt = $mysqli->prepare("INSERT INTO buoi_hoc (ten_buoi, noi_dung, thoi_luong, ma_khoa) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param('ssii', $ten_buoi, $noi_dung, $thoi_luong, $ma_khoa);
+    $ten_video = trim($_POST['ten_video']);
+    $duong_dan_video = trim($_POST['duong_dan_video']);
+    $mo_ta = trim($_POST['mo_ta']);
+    $thoi_luong_video = intval($_POST['thoi_luong_video']);
+
+    if ($ten_buoi && $ten_video && $duong_dan_video && $thoi_luong_video) {
+        // Thêm buổi học
+        $stmt = $mysqli->prepare("INSERT INTO buoi_hoc (ten_buoi, noi_dung, ma_khoa) VALUES (?, ?, ?)");
+        $stmt->bind_param('ssi', $ten_buoi, $noi_dung, $ma_khoa);
         if ($stmt->execute()) {
-            // Sau khi thêm thành công, reload lại trang để hiện danh sách mới
+            $ma_buoi_moi = $stmt->insert_id;
+            // Thêm video bài giảng đầu tiên cho buổi học này
+            $stmt2 = $mysqli->prepare("INSERT INTO video_bai_giang (ten_video, duong_dan_video, mo_ta, thoi_luong, ma_buoi) VALUES (?, ?, ?, ?, ?)");
+            $stmt2->bind_param('sssii', $ten_video, $duong_dan_video, $mo_ta, $thoi_luong_video, $ma_buoi_moi);
+            $stmt2->execute();
+            // Reload lại trang để hiện danh sách mới
             header("Location: manage_course.php?ma_khoa=$ma_khoa");
             exit;
         } else {
@@ -92,8 +102,12 @@ if (isset($_GET['delete_buoi'])) {
     header("Location: manage_course.php?ma_khoa=$ma_khoa");
     exit;
 }
-// Lấy danh sách buổi học
-$sql = "SELECT * FROM buoi_hoc WHERE ma_khoa = $ma_khoa ORDER BY ma_buoi ASC";
+// Lấy danh sách buổi học kèm video đầu tiên
+$sql = "SELECT bh.*, vbg.ten_video, vbg.thoi_luong 
+        FROM buoi_hoc bh
+        LEFT JOIN video_bai_giang vbg ON bh.ma_buoi = vbg.ma_buoi
+        WHERE bh.ma_khoa = $ma_khoa
+        ORDER BY bh.ma_buoi ASC";
 $result = $mysqli->query($sql);
 ?>
 
@@ -106,9 +120,10 @@ $result = $mysqli->query($sql);
         <?php echo $khoa ? ' - ' . htmlspecialchars($khoa['ten_khoa']) : ''; ?>
     </title>
     <link rel="stylesheet" href="manage_course.css">
-    <link rel="stylesheet" href="manage_course1.css">
+    <!-- <link rel="stylesheet" href="manage_course1.css">   -->
 </head>
 <body>
+    <?php include 'header.php'; ?>
     <?php if ($khoa): ?>
         <div class="manage_header">
             <a href="home.php" class="btn-back-home">
@@ -133,10 +148,18 @@ $result = $mysqli->query($sql);
                 <form method="post">
                     <label>Tên buổi học:</label>
                     <input type="text" name="ten_buoi" required>
-                    <label>Nội dung:</label>
+                    <label>Nội dung buổi học:</label>
                     <textarea name="noi_dung" rows="3"></textarea>
-                    <label>Thời lượng (phút):</label>
-                    <input type="number" name="thoi_luong" min="1" required>
+                    <hr>
+                    <h4>Video bài giảng đầu tiên</h4>
+                    <label>Tên video:</label>
+                    <input type="text" name="ten_video" required>
+                    <label>Đường dẫn video:</label>
+                    <input type="text" name="duong_dan_video" required>
+                    <label>Mô tả video:</label>
+                    <textarea name="mo_ta" rows="2"></textarea>
+                    <label>Thời lượng video (phút):</label>
+                    <input type="number" name="thoi_luong_video" min="1" required>
                     <button type="submit" name="add_session" class="btn-add">Thêm</button>
                 </form>
             </div>
@@ -178,7 +201,7 @@ $result = $mysqli->query($sql);
                         <td><?php echo $i++; ?></td>
                         <td><?php echo htmlspecialchars($row['ten_buoi'] ?? $row['chu_de'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($row['noi_dung'] ?? $row['ghi_chu'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['thoi_luong']); ?></td>
+                        <td><?php echo htmlspecialchars($row['thoi_luong'] ?? ''); ?></td>
                         <td>
                             <a href="#" 
                                class="btn-edit"

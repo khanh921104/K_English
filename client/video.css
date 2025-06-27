@@ -47,3 +47,46 @@ body {
         .btn-homework:hover {
             background: #0d47a1;
         }
+
+.main-flex {
+            display: flex;
+            gap: 32px;
+            margin: 32px auto;
+            max-width: 1200px;
+        }
+        .video-side {
+            flex: 1.2;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(21,101,192,0.07);
+            padding: 24px 18px;
+            min-width: 350px;
+        }
+        .homework-side {
+            flex: 1;
+            background: #f1f6fb;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(21,101,192,0.07);
+            padding: 24px 18px;
+            min-width: 350px;
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 18px;
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .btn-submit {
+            margin-top: 16px;
+            padding: 8px 18px;
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background: #0d47a1;
+        }

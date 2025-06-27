@@ -37,9 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $thong_bao = "Vui lòng nhập đầy đủ thông tin hợp lệ!";
     }
 }
-echo '<pre>';
-print_r($_SESSION);
-echo '</pre>';
+
 
 ?>
 <!DOCTYPE html>
@@ -50,6 +48,7 @@ echo '</pre>';
     <link rel="stylesheet" href="add_course.css">
 </head>
 <body>
+    <?php include 'header.php'; ?>
     <div class="add-course-container">
         <h2>Thêm khóa học mới</h2>
         <?php if ($thong_bao): ?>

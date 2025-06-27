@@ -15,6 +15,7 @@ if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 3) {
     <link rel="stylesheet" href="search.css">
 </head>
 <body>
+    <?php include 'header.php'; ?>
     <?php
     include '../db.php';
 

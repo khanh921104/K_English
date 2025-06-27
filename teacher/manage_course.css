@@ -1,154 +1,192 @@
-/* Đặt font và màu nền tổng thể */
+/* Tổng thể */
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f7fa;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f4f6f8;
+    color: #333;
 }
 
-/* Tiêu đề trang */
-h2 {
-    color: #1565c0;
-    margin: 32px 0 18px 0;
-    text-align: center;
-}
-
+/* Header */
 .manage_header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #1976d2;
-    
+    color: white;
+    padding: 16px 24px;
 }
 
 .manage_header h1 {
-    
-    color: #fff;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
 }
 
-/* Nút thêm mới */
-.btn-add {
-    display: inline-block;
-    margin: 0 0 18px 32px;
-    padding: 8px 18px;
-    background: #1976d2;
-    color: #fff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
-}
-.btn-add:hover {
-    background: #0d47a1;
-}
-
-/* Nút quay về trang chủ */
 .btn-back-home {
-    display: inline-block;
-    margin: 18px 0 18px 32px;
-    padding: 8px 20px;
-    background: #f5f7fa;
-    color: #1565c0;
+    background: white;
+    color: #1976d2;
+    font-weight: bold;
+    padding: 6px 10px;
     border-radius: 6px;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 1.08rem;
-    border: 1px solid #90caf9;
-    box-shadow: 0 2px 8px rgba(21,101,192,0.07);
-    transition: background 0.2s, color 0.2s, border 0.2s;
 }
-.btn-back-home:hover {
-    background: #bbdefb;
+
+/* Thông tin khóa học */
+h2 {
+    margin: 20px 24px 10px;
     color: #0d47a1;
-    border: 1.5px solid #1976d2;
 }
 
-/* Đảm bảo bảng không vượt quá vùng chứa */
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-}
-
-/* Áp dụng cho table */
-table {
-    table-layout: fixed;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-/* Cố định chiều rộng và cắt nội dung dài cho 2 cột */
-th.chu-de, td.chu-de,
-th.ghi-chu, td.ghi-chu {
-    width: 180px;
-    max-width: 180px;
-    min-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Bảng danh sách khóa học */
-table {
-    width: 90%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(21,101,192,0.08);
-}
-th, td {
-    padding: 14px 10px;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-}
-th {
-    background: #1976d2;
-    color: #fff;
-    font-weight: 600;
-}
-tr:hover {
-    background: #f0f7ff;
-}
-
-/* Nút thao tác */
-.btn-edit, .btn-delete {
-    padding: 6px 14px;
-    border-radius: 5px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-    margin-right: 6px;
-}
-.btn-edit {
-    background: #42a5f5;
-    color: #fff;
-}
-.btn-edit:hover {
-    background: #1976d2;
-}
-.btn-delete {
-    background: #ef5350;
-    color: #fff;
-}
-.btn-delete:hover {
-    background: #b71c1c;
-}
-.add-session-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 18px;
+/* Form chỉnh sửa thông tin khóa học */
+.edit-course-info {
+    margin: 0 24px 20px;
+    background: #e3f2fd;
+    border-left: 5px solid #2196f3;
 }
 
 /* Thông báo */
 .alert-message {
-    background: #e3f2fd;
-    color: #1565c0;
-    border: 1.5px solid #90caf9;
-    border-radius: 7px;
-    padding: 10px 18px;
-    margin: 12px 0;
-    font-size: 1.05rem;
-    font-weight: 500;
-    text-align: center;
+    margin: 16px 24px;
+    padding: 10px 14px;
+    background: #ffecb3;
+    border-left: 6px solid #ffa000;
+    border-radius: 5px;
+}
+
+/* Nút thêm buổi học */
+.add-session-container {
+    margin: 16px 24px;
+}
+
+.btn-add {
+    padding: 8px 14px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-add:hover {
+    background-color: #388e3c;
+}
+
+/* Bảng buổi học */
+table {
+    width: calc(100% - 48px);
+    margin: 0 auto 32px;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+table thead {
+    background-color: #e3f2fd;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Thao tác */
+.btn-edit, .btn-delete {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 6px 12px;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 6px;
+    color: white;
+}
+
+.btn-edit {
+    background-color: #0288d1;
+}
+
+.btn-edit:hover {
+    background-color: #0277bd;
+}
+
+.btn-delete {
+    background-color: #e53935;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
+
+/* Overlay form */
+/* Overlay hiển thị form */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Nội dung overlay cuộn được khi dài */
+.overlay-content {
+    background-color: #fff;
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    position: relative;
+    overflow-y: auto;
+    max-height: 90vh; /* Cho phép cuộn nếu quá dài */
+}
+
+/* Nút đóng */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Form input và button */
+.overlay-content form input,
+.overlay-content form textarea,
+.overlay-content form button {
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.overlay-content form button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.overlay-content form button:hover {
+    background-color: #0d47a1;
 }
