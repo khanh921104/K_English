@@ -109,6 +109,24 @@ $sql = "SELECT bh.*, vbg.ten_video, vbg.thoi_luong
         WHERE bh.ma_khoa = $ma_khoa
         ORDER BY bh.ma_buoi ASC";
 $result = $mysqli->query($sql);
+
+// Xử lý tạo bài tập cho buổi học
+if (isset($_POST['create_homework'])) {
+    $ma_buoi_bai_tap = intval($_POST['ma_buoi_bai_tap']);
+    $ten_bai = trim($_POST['ten_bai']);
+    $noi_dung_bai_tap = trim($_POST['noi_dung_bai_tap']);
+    if ($ma_buoi_bai_tap && $ten_bai && $noi_dung_bai_tap) {
+        $stmt = $mysqli->prepare("INSERT INTO bai_tap (ten_bai, noi_dung, ma_buoi) VALUES (?, ?, ?)");
+        $stmt->bind_param('ssi', $ten_bai, $noi_dung_bai_tap, $ma_buoi_bai_tap);
+        if ($stmt->execute()) {
+            $thong_bao = "Tạo bài tập thành công!";
+        } else {
+            $thong_bao = "Lỗi khi tạo bài tập: " . $mysqli->error;
+        }
+    } else {
+        $thong_bao = "Vui lòng nhập đầy đủ thông tin bài tập!";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -125,22 +143,89 @@ $result = $mysqli->query($sql);
 <body>
     <?php include 'header.php'; ?>
     <?php if ($khoa): ?>
+    <div class="manage_course_container">
         <div class="manage_header">
             <a href="home.php" class="btn-back-home">
             &lt; 
             </a>
-            <h1>Quản lý buổi học</h1>
-            <h1>K_English</h1>
-            
-        </div>
+            <!-- <h2>Quản lý buổi học</h2> -->
             <h2><?php echo htmlspecialchars($khoa['ten_khoa']); ?></h2>
             <div class="add-session-container">
                 <button type="button" class="btn-add" onclick="showAddSessionForm()">Thêm buổi học</button>
             </div>
-        
-        
+            
+            <div class="edit-course-info" style="max-width:420px;margin:18px 0 28px 0;padding:18px 24px;background:#f5f7fa;border-radius:10px;">
+            <form method="post" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
+                <label style="font-weight:500;">Cấp độ:
+                    <input type="text" name="cap_do" value="<?php echo htmlspecialchars($khoa['cap_do'] ?? ''); ?>" required style="margin-left:8px;padding:6px 10px;border-radius:6px;border:1px solid #90caf9;">
+                </label>
+                <label style="font-weight:500;">Giá:
+                    <input type="number" name="gia" value="<?php echo htmlspecialchars($khoa['gia'] ?? ''); ?>" min="0" step="1000" required style="margin-left:8px;padding:6px 10px;border-radius:6px;border:1px solid #90caf9;">
+                </label>
+                <button type="submit" name="update_course_info" style="padding:8px 18px;border-radius:6px;background:#1976d2;color:#fff;border:none;font-weight:500;cursor:pointer;">Lưu</button>
+            </form>
+            </div>
+        </div>
 
-        <!-- Overlay form (ẩn mặc định) -->
+        <?php if (!empty($thong_bao)): ?>
+            <div class="alert-message"><?php echo htmlspecialchars($thong_bao); ?></div>
+            <?php endif; ?>
+        <div class="manage_table_wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Chủ đề</th>
+                        <th>Ghi chú</th>
+                        <th>Thời lượng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php if ($result && $result->num_rows > 0): $i=1; ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo $i++; ?></td>
+                            <td><?php echo htmlspecialchars($row['ten_buoi'] ?? $row['chu_de'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['noi_dung'] ?? $row['ghi_chu'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['thoi_luong'] ?? ''); ?></td>
+                            <td>
+                                <a href="#" 
+                                class="btn-edit"
+                                data-ma_buoi="<?php echo $row['ma_buoi']; ?>"
+                                data-ten_buoi="<?php echo htmlspecialchars($row['ten_buoi']); ?>"
+                                data-noi_dung="<?php echo htmlspecialchars($row['noi_dung']); ?>"
+                                data-thoi_luong="<?php echo htmlspecialchars($row['thoi_luong']); ?>"
+                                onclick="showEditSessionForm(this); return false;">Sửa</a>
+                                <a href="?ma_khoa=<?php echo $ma_khoa; ?>&delete_buoi=<?php echo $row['ma_buoi']; ?>"
+                                class="btn-delete"
+                                onclick="return confirm('Bạn chắc chắn muốn xóa buổi học này?');">
+                                Xóa
+                                </a>
+                                <a href="#" 
+                                class="btn-create-homework"
+                                data-ma_buoi="<?php echo $row['ma_buoi']; ?>"
+                                onclick="showCreateHomeworkForm(this); return false;">Tạo bài tập</a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr><td colspan="5">Chưa có buổi học nào.</td></tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+            <?php else: ?>
+                <h2>Không tìm thấy thông tin khóa học.</h2>
+            <?php endif; ?>
+        </div>
+
+    
+
+
+    
+
+    <!-- hiden form  -->
+<!-- Overlay form (ẩn mặc định) -->
         <div id="addSessionOverlay" class="overlay" style="display:none;">
             <div class="overlay-content">
                 <span class="close-btn" onclick="hideAddSessionForm()">&times;</span>
@@ -183,63 +268,21 @@ $result = $mysqli->query($sql);
             </div>
         </div>
 
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Chủ đề</th>
-                    <th>Ghi chú</th>
-                    <th>Thời lượng</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php if ($result && $result->num_rows > 0): $i=1; ?>
-                <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo $i++; ?></td>
-                        <td><?php echo htmlspecialchars($row['ten_buoi'] ?? $row['chu_de'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['noi_dung'] ?? $row['ghi_chu'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['thoi_luong'] ?? ''); ?></td>
-                        <td>
-                            <a href="#" 
-                               class="btn-edit"
-                               data-ma_buoi="<?php echo $row['ma_buoi']; ?>"
-                               data-ten_buoi="<?php echo htmlspecialchars($row['ten_buoi']); ?>"
-                               data-noi_dung="<?php echo htmlspecialchars($row['noi_dung']); ?>"
-                               data-thoi_luong="<?php echo htmlspecialchars($row['thoi_luong']); ?>"
-                               onclick="showEditSessionForm(this); return false;">Sửa</a>
-                            <a href="?ma_khoa=<?php echo $ma_khoa; ?>&delete_buoi=<?php echo $row['ma_buoi']; ?>"
-                               class="btn-delete"
-                               onclick="return confirm('Bạn chắc chắn muốn xóa buổi học này?');">
-                               Xóa
-                            </a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr><td colspan="5">Chưa có buổi học nào.</td></tr>
-            <?php endif; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <h2>Không tìm thấy thông tin khóa học.</h2>
-    <?php endif; ?>
-
-    <?php if (!empty($thong_bao)): ?>
-    <div class="alert-message"><?php echo htmlspecialchars($thong_bao); ?></div>
-    <?php endif; ?>
-    <div class="edit-course-info" style="max-width:420px;margin:18px 0 28px 0;padding:18px 24px;background:#f5f7fa;border-radius:10px;">
-        <form method="post" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
-            <label style="font-weight:500;">Cấp độ:
-                <input type="text" name="cap_do" value="<?php echo htmlspecialchars($khoa['cap_do'] ?? ''); ?>" required style="margin-left:8px;padding:6px 10px;border-radius:6px;border:1px solid #90caf9;">
-            </label>
-            <label style="font-weight:500;">Giá:
-                <input type="number" name="gia" value="<?php echo htmlspecialchars($khoa['gia'] ?? ''); ?>" min="0" step="1000" required style="margin-left:8px;padding:6px 10px;border-radius:6px;border:1px solid #90caf9;">
-            </label>
-            <button type="submit" name="update_course_info" style="padding:8px 18px;border-radius:6px;background:#1976d2;color:#fff;border:none;font-weight:500;cursor:pointer;">Lưu</button>
-        </form>
+        <!-- Overlay form tạo bài tập (ẩn mặc định) -->
+        <div id="createHomeworkOverlay" class="overlay" style="display:none;">
+            <div class="overlay-content">
+                <span class="close-btn" onclick="hideCreateHomeworkForm()">&times;</span>
+                <h3>Tạo bài tập cho buổi học</h3>
+                <form method="post">
+                    <input type="hidden" name="ma_buoi_bai_tap" id="ma_buoi_bai_tap">
+                    <label>Tên bài tập:</label>
+                    <input type="text" name="ten_bai" required>
+                    <label>Nội dung bài tập:</label>
+                    <textarea name="noi_dung_bai_tap" rows="3" required></textarea>
+                    <button type="submit" name="create_homework" class="btn-add">Tạo bài tập</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -261,6 +304,23 @@ $result = $mysqli->query($sql);
 
         function hideEditSessionForm() {
             document.getElementById('editSessionOverlay').style.display = 'none';
+        }
+
+        function showCreateHomeworkForm(el) {
+            document.getElementById('ma_buoi_bai_tap').value = el.getAttribute('data-ma_buoi');
+            document.getElementById('createHomeworkOverlay').style.display = 'block';
+        }
+
+        function hideCreateHomeworkForm() {
+            document.getElementById('createHomeworkOverlay').style.display = 'none';
+        }
+
+        function showCreateHomeworkForm(el) {
+            document.getElementById('ma_buoi_bai_tap').value = el.getAttribute('data-ma_buoi');
+            document.getElementById('createHomeworkOverlay').style.display = 'block';
+        }
+        function hideCreateHomeworkForm() {
+            document.getElementById('createHomeworkOverlay').style.display = 'none';
         }
     </script>
 </body>

@@ -7,12 +7,28 @@ body {
     color: #333;
 }
 
-/* Header */
-.manage_header {
+.manage_course_container {
     display: flex;
     justify-content: space-between;
+}
+
+.manage_header {
+    flex: 1;
+    /* Optional: thêm padding hoặc border nếu muốn */
+}
+
+.manage_table_wrapper {
+    flex: 9;
+    margin: 10px;
+    /* Optional: thêm padding hoặc border nếu muốn */
+}
+
+/* Header */
+.manage_header {
+    /* display: flex; */
+    justify-content: space-between;
     align-items: center;
-    background-color: #1976d2;
+    background-color: #d23535;
     color: white;
     padding: 16px 24px;
 }
@@ -35,7 +51,7 @@ body {
 /* Thông tin khóa học */
 h2 {
     margin: 20px 24px 10px;
-    color: #0d47a1;
+    color: #ffffff;
 }
 
 /* Form chỉnh sửa thông tin khóa học */
@@ -100,7 +116,7 @@ table tr:hover {
 }
 
 /* Thao tác */
-.btn-edit, .btn-delete {
+.btn-edit, .btn-delete, .btn-create-homework  {
     display: inline-block;
     margin-right: 8px;
     padding: 6px 12px;
@@ -124,6 +140,14 @@ table tr:hover {
 
 .btn-delete:hover {
     background-color: #d32f2f;
+}
+
+.btn-create-homework {
+    background-color: #08d022;
+}
+
+.btn-create-homework:hover {
+    background-color: #098219;
 }
 
 /* Overlay form */
