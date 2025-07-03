@@ -63,15 +63,17 @@ $completed_courses = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
                     $tong_buoi = $stmt_total->get_result()->fetch_assoc()['tong_buoi'] ?? 0;
 
                     // Đếm số buổi đã học (giả sử đã học là có dòng trong lich_su_hoc)
-                    $sql_done = "SELECT COUNT(DISTINCT bh.ma_buoi) AS da_hoc
-                                 FROM buoi_hoc bh
-                                 JOIN video_bai_giang v ON bh.ma_buoi = v.ma_buoi
-                                 JOIN lich_su_hoc lsh ON v.ma_video = lsh.ma_video
-                                 WHERE bh.ma_khoa = ? AND lsh.ma_kh = ?";
+                    // Đếm số buổi đã học dựa trên bài tập đã làm và hoàn thành
+                    $sql_done = "SELECT COUNT(DISTINCT bt.ma_buoi) AS da_hoc
+                                FROM bai_tap bt
+                                JOIN lam_bai_tap lbt ON bt.ma_bai = lbt.ma_bai
+                                JOIN buoi_hoc bh ON bt.ma_buoi = bh.ma_buoi
+                                WHERE lbt.ma_kh = ? AND lbt.trang_thai = 'Hoàn thành' AND bh.ma_khoa = ?";
                     $stmt_done = $mysqli->prepare($sql_done);
-                    $stmt_done->bind_param('ii', $course['ma_khoa'], $user_id);
+                    $stmt_done->bind_param('ii', $user_id, $course['ma_khoa']);
                     $stmt_done->execute();
                     $da_hoc = $stmt_done->get_result()->fetch_assoc()['da_hoc'] ?? 0;
+
                     ?>
                     <li>
                         <a href="course_detail.php?id=<?= htmlspecialchars($course['ma_khoa']) ?>">

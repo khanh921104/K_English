@@ -28,16 +28,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dap_an']) && is_array
     foreach ($_POST['dap_an'] as $ma_bai => $dap_an) {
         $ma_bai = intval($ma_bai);
         $dap_an = trim($dap_an);
-        // Kiểm tra đã nộp chưa
-        $check = $mysqli->prepare("SELECT * FROM lam_bai_tap WHERE ma_bai=? AND ma_kh=?");
-        $check->bind_param('ii', $ma_bai, $ma_kh);
-        $check->execute();
-        $check_result = $check->get_result();
-        if ($check_result && $check_result->num_rows == 0) {
-            $stmt_insert = $mysqli->prepare("INSERT INTO lam_bai_tap (ma_bai, ma_kh, dap_an, trang_thai) VALUES (?, ?, ?, 'Chưa hoàn thành')");
-            $stmt_insert->bind_param('iis', $ma_bai, $ma_kh, $dap_an);
+        $diem = null;
+        $trang_thai = 'Hoàn thành';
+
+        // Kiểm tra đã tồn tại chưa
+        $stmt_check = $mysqli->prepare("SELECT 1 FROM lam_bai_tap WHERE ma_bai = ? AND ma_kh = ?");
+        $stmt_check->bind_param('ii', $ma_bai, $ma_kh);
+        $stmt_check->execute();
+        $stmt_check->store_result();
+
+        if ($stmt_check->num_rows > 0) {
+            // Nếu đã tồn tại, cập nhật đáp án mới
+            $stmt_update = $mysqli->prepare("UPDATE lam_bai_tap SET dap_an = ?, diem = ?, trang_thai = ?, thoi_gian_nop = NOW() WHERE ma_bai = ? AND ma_kh = ?");
+            $stmt_update->bind_param('sissi', $dap_an, $diem, $trang_thai, $ma_bai, $ma_kh);
+            $stmt_update->execute();
+        } else {
+            // Nếu chưa có, thêm mới
+            $stmt_insert = $mysqli->prepare("INSERT INTO lam_bai_tap (ma_bai, ma_kh, dap_an, diem, trang_thai) VALUES (?, ?, ?, ?, ?)");
+            $stmt_insert->bind_param('iisis', $ma_bai, $ma_kh, $dap_an, $diem, $trang_thai);
             $stmt_insert->execute();
         }
+        $stmt_check->close();   
     }
     $thong_bao = "Nộp bài thành công!";
 }
@@ -48,6 +59,23 @@ $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $ma_buoi);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Kiểm tra hoàn thành bài tập buổi học
+$stmt_total = $mysqli->prepare("SELECT COUNT(*) FROM bai_tap WHERE ma_buoi = ?");
+$stmt_total->bind_param('i', $ma_buoi);
+$stmt_total->execute();
+$stmt_total->bind_result($total_bai_tap);
+$stmt_total->fetch();
+$stmt_total->close();
+
+$stmt_nop = $mysqli->prepare("SELECT COUNT(*) FROM lam_bai_tap WHERE ma_kh = ? AND ma_bai IN (SELECT ma_bai FROM bai_tap WHERE ma_buoi = ?)");
+$stmt_nop->bind_param('ii', $ma_kh, $ma_buoi);
+$stmt_nop->execute();
+$stmt_nop->bind_result($total_nop);
+$stmt_nop->fetch();
+$stmt_nop->close();
+
+$is_hoan_thanh = ($total_bai_tap > 0 && $total_bai_tap == $total_nop);
 
 // Hàm lấy id youtube
 function getYoutubeId($url) {
@@ -146,6 +174,9 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
                 </form>
             <?php else: ?>
                 <p>Chưa có bài tập cho buổi học này.</p>
+            <?php endif; ?>
+            <?php if ($is_hoan_thanh): ?>
+                <div class="alert-message" style="color:green;">Bạn đã hoàn thành tất cả bài tập của buổi học này!</div>
             <?php endif; ?>
         </div>
     </div>

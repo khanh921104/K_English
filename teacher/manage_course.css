@@ -73,6 +73,9 @@ h2 {
 /* Nút thêm buổi học */
 .add-session-container {
     margin: 16px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn-add {

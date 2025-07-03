@@ -59,26 +59,43 @@ if (isset($_POST['dang_ky']) && $ma_kh && $id) {
                         <img src="<?php echo htmlspecialchars($row['hinh_anh']); ?>" alt="Ảnh khóa học" class="course-image">
                     <?php endif; ?>
                     <?php
-// Kiểm tra đã đăng ký chưa
-$da_dang_ky = false;
-if ($ma_kh && $id) {
-    $check = $mysqli->query("SELECT * FROM dang_ky WHERE ma_khoa = $id AND ma_kh = $ma_kh");
-    if ($check && $check->num_rows > 0) {
-        $da_dang_ky = true;
-    }
-}
-?>
-<div class="course-actions">
-    <a href="home.php" class="btn-back">⫷</a>
-    <form method="post">
-        <button type="submit" name="dang_ky" class="btn-enroll">Đăng ký khóa học</button>
-    </form>
-</div>
-                    <?php if (!empty($thong_bao)): ?>
-    <div class="alert-message">
-        <?php echo htmlspecialchars($thong_bao); ?>
-    </div>
-<?php endif; ?>
+                // Kiểm tra đã đăng ký chưa
+                $da_dang_ky = false;
+                if ($ma_kh && $id) {
+                    $check = $mysqli->query("SELECT * FROM dang_ky WHERE ma_khoa = $id AND ma_kh = $ma_kh");
+                    if ($check && $check->num_rows > 0) {
+                        $da_dang_ky = true;
+                    }
+                }
+                // Kiểm tra đã hoàn thành khóa học chưa
+                $completed =  false;
+                if($ma_kh && $id) {
+                    $check = $mysqli->query("SELECT trang_thai FROM dang_ky WHERE ma_khoa = $id AND ma_kh = $ma_kh AND trang_thai = 'completed'");
+                    if ($check && $check->num_rows > 0) {
+                        $completed = true;
+                    }
+                }
+
+                ?>
+                <div class="course-actions">
+                    <a href="home.php" class="btn-back">⫷</a>
+
+                    <?php if (!$da_dang_ky): ?>
+                    <!-- Nếu chưa đăng ký -->
+                    <form method="post">
+                        <button type="submit" name="dang_ky" class="btn-enroll">Đăng ký khóa học</button>
+                    </form>
+                
+                    <?php elseif ($completed): ?>
+                        <!-- Nếu đã hoàn thành khóa học -->
+                        <span class="btn_completed">✅ Đã hoàn thành khóa</span>
+                    
+                    <?php else: ?>
+                        <!-- Nếu đã đăng ký nhưng chưa hoàn thành -->
+                        <a href="thi_ket_thuc.php?ma_khoa=<?= $id ?>" class="btn-test-end">Thi kết thúc khóa</a>
+                    <?php endif; ?>
+                </div>
+
                 </div>
                 <div class="session-list">
                     <h3>Danh sách buổi học</h3>

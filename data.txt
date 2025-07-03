@@ -124,20 +124,7 @@ CREATE TABLE lich_su_hoc (
     FOREIGN KEY (ma_video) REFERENCES video_bai_giang(ma_video) ON DELETE CASCADE
 );
 
-DELIMITER $$
 
-CREATE TRIGGER cap_nhat_trang_thai_bai_tap
-BEFORE INSERT ON lam_bai_tap
-FOR EACH ROW
-BEGIN
-    IF NEW.diem >= 7 THEN
-        SET NEW.trang_thai = 'Hoàn thành';
-    ELSE
-        SET NEW.trang_thai = 'Chưa hoàn thành';
-    END IF;
-END$$
-
-DELIMITER ;
 
 DELIMITER $$
 

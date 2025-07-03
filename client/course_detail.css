@@ -57,7 +57,7 @@
 .course-actions{
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
     
 }
 .btn-back:hover {
@@ -111,4 +111,38 @@
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(21,101,192,0.07);
     text-align: center;
+}
+
+.btn_test {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff; /* Màu xanh dương */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.btn_test:hover {
+    background-color: #0056b3; /* Màu xanh dậm hơn khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+}
+
+.btn_completed {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #6c757d;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    opacity: 0.9;
+    cursor: not-allowed;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
