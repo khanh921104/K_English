@@ -96,6 +96,40 @@ CREATE TABLE bai_tap (
     FOREIGN KEY (ma_buoi) REFERENCES buoi_hoc(ma_buoi)
 );
 
+CREATE TABLE tu_luan (
+    ma_bai INT PRIMARY KEY,
+    ten_bai VARCHAR(255),
+    noi_dung TEXT,
+    huong_dan_cham TEXT,
+
+    FOREIGN KEY (ma_bai) REFERENCES bai_tap(ma_bai)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE trac_nghiem (
+    ma_cau_trac_nghiem INT PRIMARY KEY AUTO_INCREMENT,
+    ma_bai INT ,
+    ten_bai VARCHAR(255),
+    noi_dung TEXT,
+    noi_dung_a TEXT,
+    noi_dung_b TEXT,
+    noi_dung_c TEXT,
+    noi_dung_d TEXT,
+    noi_dung_e TEXT,
+    noi_dung_f TEXT,
+    noi_dung_g TEXT,
+    noi_dung_h TEXT,
+    noi_dung_i TEXT,
+    noi_dung_j TEXT,
+    dap_an_dung SET('A','B','C','D','E','F','G','H','I','J') NOT NULL,
+
+    FOREIGN KEY (ma_bai) REFERENCES bai_tap(ma_bai)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+
 CREATE TABLE lam_bai_tap( 
     ma_bai INT,
     ma_kh INT,

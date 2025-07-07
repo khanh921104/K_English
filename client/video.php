@@ -60,6 +60,57 @@ $stmt->bind_param('i', $ma_buoi);
 $stmt->execute();
 $result = $stmt->get_result();
 
+// Kiểm tra lỗi truy vấn
+while ($row = $result->fetch_assoc()) {
+    $ma_bai = $row['ma_bai'];
+    $loai_bai = $row['loai_bai'];
+    $bai = null;
+
+    if ($loai_bai === 'tu_luan') {
+        $stmt_tl = $mysqli->prepare("SELECT * FROM tu_luan WHERE ma_bai = ?");
+        $stmt_tl->bind_param("i", $ma_bai);
+        $stmt_tl->execute();
+        $result_tl = $stmt_tl->get_result();
+
+        while ($bai = $result_tl->fetch_assoc()) {
+            $bai_tap_list[] = [
+                'ma_cau' => $bai['ma_cau_tu_luan'], // bạn phải có cột này là PRIMARY KEY
+                'ma_bai' => $ma_bai,
+                'loai_bai' => $loai_bai,
+                'ten_bai' => $bai['ten_bai'],
+                'noi_dung' => $bai['noi_dung']
+            ];
+        }
+    } elseif ($loai_bai === 'trac_nghiem') {
+        $stmt_tn = $mysqli->prepare("SELECT * FROM trac_nghiem WHERE ma_bai = ?");
+        $stmt_tn->bind_param("i", $ma_bai);
+        $stmt_tn->execute();
+        $result_tn = $stmt_tn->get_result();
+
+        while ($bai = $result_tn->fetch_assoc()) {
+            $bai_tap_list[] = [
+                'ma_bai' => $ma_bai,
+                'loai_bai' => $loai_bai,
+                'ten_bai' => $bai['ten_bai'],
+                'noi_dung' => $bai['noi_dung'],
+                'dap_an' => $bai // chứa các nội dung A–J
+            ];
+        }
+    }
+
+    if ($bai) {
+        $bai_tap_list[] = [
+            'ma_bai' => $ma_bai,
+            'loai_bai' => $loai_bai,
+            'ten_bai' => $bai['ten_bai'],
+            'noi_dung' => $bai['noi_dung'],
+            'dap_an' => $bai // dùng lại trong trac_nghiem nếu cần các đáp án A, B, C...
+        ];
+    }
+}
+
+
+
 // Kiểm tra hoàn thành bài tập buổi học
 $stmt_total = $mysqli->prepare("SELECT COUNT(*) FROM bai_tap WHERE ma_buoi = ?");
 $stmt_total->bind_param('i', $ma_buoi);
@@ -158,27 +209,45 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
         </div>
         <div class="homework-side">
             <h2>Bài tập của buổi học</h2>
+
             <?php if (!empty($thong_bao)): ?>
                 <div class="alert-message"><?php echo htmlspecialchars($thong_bao); ?></div>
             <?php endif; ?>
-            <?php if ($result && $result->num_rows > 0): ?>
+
+            <?php if (!empty($bai_tap_list)): ?>
                 <form method="post">
-                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php foreach ($bai_tap_list as $bai): ?>
                         <div class="homework-item">
-                            <h3><?php echo htmlspecialchars($row['ten_bai']); ?></h3>
-                            <div class="content"><?php echo nl2br(htmlspecialchars($row['noi_dung'])); ?></div>
-                            <textarea name="dap_an[<?php echo $row['ma_bai']; ?>]" rows="3" style="width:100%;padding:7px;" placeholder="Nhập đáp án của bạn..." required></textarea>
+                            <h3><?php echo htmlspecialchars($bai['ten_bai']); ?></h3>
+                            <div class="content"><?php echo nl2br(htmlspecialchars($bai['noi_dung'])); ?></div>
+
+                            <?php if ($bai['loai_bai'] === 'tu_luan'): ?>
+                                <textarea name="dap_an[<?php echo $bai['ma_bai']; ?>]" rows="4" style="width:100%;padding:7px;" placeholder="Nhập đáp án của bạn..." required></textarea>
+
+                            <?php elseif ($bai['loai_bai'] === 'trac_nghiem'): ?>
+                                <?php foreach (range('A', 'J') as $opt): 
+                                    $field = 'noi_dung_' . strtolower($opt);
+                                    if (!empty($bai['dap_an'][$field])): ?>
+                                        <label>
+                                            <input type="checkbox" name="dap_an[<?php echo $bai['ma_bai']; ?>][]" value="<?php echo $opt; ?>">
+                                            <?php echo "$opt. " . htmlspecialchars($bai['dap_an'][$field]); ?>
+                                        </label><br>
+                                    <?php endif;
+                                endforeach; ?>
+                            <?php endif; ?>
                         </div>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                     <button type="submit" class="btn-submit">Nộp bài</button>
                 </form>
             <?php else: ?>
                 <p>Chưa có bài tập cho buổi học này.</p>
             <?php endif; ?>
+
             <?php if ($is_hoan_thanh): ?>
                 <div class="alert-message" style="color:green;">Bạn đã hoàn thành tất cả bài tập của buổi học này!</div>
             <?php endif; ?>
         </div>
+
     </div>
 </body>
 </html>

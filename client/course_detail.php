@@ -92,7 +92,7 @@ if (isset($_POST['dang_ky']) && $ma_kh && $id) {
                     
                     <?php else: ?>
                         <!-- Nếu đã đăng ký nhưng chưa hoàn thành -->
-                        <a href="thi_ket_thuc.php?ma_khoa=<?= $id ?>" class="btn-test-end">Thi kết thúc khóa</a>
+                        <a href="thi_ket_thuc.php?ma_khoa=<?= $id ?>" class="btn_test">Thi kết thúc khóa</a>
                     <?php endif; ?>
                 </div>
 

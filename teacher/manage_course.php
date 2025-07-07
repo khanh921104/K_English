@@ -322,6 +322,8 @@ if (isset($_POST['create_homework'])) {
         function hideCreateHomeworkForm() {
             document.getElementById('createHomeworkOverlay').style.display = 'none';
         }
+
+        
     </script>
 </body>
 </html>

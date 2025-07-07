@@ -41,8 +41,7 @@ $ma_kh = isset($_SESSION['ma_kh']) ? intval($_SESSION['ma_kh']) : 0;
     <h3>Danh sách khóa học của bạn</h3>
     <div class="course-list">
         <?php
-        // Lấy danh sách khóa học của giáo viên có mã là 1 (ma_gv = 1)
-        $teacher_id = 1;
+        // Lấy danh sách khóa học của giáo viên
         $sql = "SELECT kh.ma_khoa, kh.ten_khoa, kh.mo_ta, kh.cap_do, kh.gia
                 FROM khoa_hoc kh
                 INNER JOIN giao_vien_tao_khoa_hoc gvkh ON kh.ma_khoa = gvkh.ma_khoa

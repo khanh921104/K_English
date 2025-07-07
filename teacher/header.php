@@ -5,8 +5,8 @@
         <h1><a href="home.php">K-English</a></h1>
         <nav>
             <ul>
+                <li><a href="grade_assignments.php">Chấm điểm</a></li>
                 <li><a href="add_course.php">Thêm khóa học</a></li>
-                
                 <li><a href="teacher_information.php">Tài khoản</a></li>
             </ul>
         </nav>
