@@ -202,10 +202,10 @@ if (isset($_POST['create_homework'])) {
                                 onclick="return confirm('Bạn chắc chắn muốn xóa buổi học này?');">
                                 Xóa
                                 </a>
-                                <a href="#" 
+                                <a href="manage_assignment.php?ma_buoi=<?php echo $row['ma_buoi']; ?>" 
                                 class="btn-create-homework"
                                 data-ma_buoi="<?php echo $row['ma_buoi']; ?>"
-                                onclick="showCreateHomeworkForm(this); return false;">Tạo bài tập</a>
+                                onclick="">Bài tập</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -306,22 +306,7 @@ if (isset($_POST['create_homework'])) {
             document.getElementById('editSessionOverlay').style.display = 'none';
         }
 
-        function showCreateHomeworkForm(el) {
-            document.getElementById('ma_buoi_bai_tap').value = el.getAttribute('data-ma_buoi');
-            document.getElementById('createHomeworkOverlay').style.display = 'block';
-        }
-
-        function hideCreateHomeworkForm() {
-            document.getElementById('createHomeworkOverlay').style.display = 'none';
-        }
-
-        function showCreateHomeworkForm(el) {
-            document.getElementById('ma_buoi_bai_tap').value = el.getAttribute('data-ma_buoi');
-            document.getElementById('createHomeworkOverlay').style.display = 'block';
-        }
-        function hideCreateHomeworkForm() {
-            document.getElementById('createHomeworkOverlay').style.display = 'none';
-        }
+        
 
         
     </script>

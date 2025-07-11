@@ -6,112 +6,137 @@ if (!isset($_SESSION['ma_quyen']) || $_SESSION['ma_quyen'] != 3) {
 }
 include '../db.php';
 
-// Lấy id buổi học từ URL (?id=...)
 $ma_buoi = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $ma_kh = intval($_SESSION['ma_kh']);
 
-// Lấy đường dẫn video
 $duong_dan_video = '';
 $mo_ta_video = '';
 if ($ma_buoi > 0) {
-    $sql = "SELECT duong_dan_video, mo_ta FROM video_bai_giang WHERE ma_buoi = $ma_buoi LIMIT 1";
-    $result = $mysqli->query($sql);
+    $sql = "SELECT duong_dan_video, mo_ta FROM video_bai_giang WHERE ma_buoi = ? LIMIT 1";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param('i', $ma_buoi);
+    $stmt->execute();
+    $result = $stmt->get_result();
     if ($result && $row = $result->fetch_assoc()) {
         $duong_dan_video = $row['duong_dan_video'];
         $mo_ta_video = $row['mo_ta'];
     }
+    $stmt->close();
 }
 
-// Xử lý nộp bài
 $thong_bao = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dap_an']) && is_array($_POST['dap_an'])) {
+    $valid_options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     foreach ($_POST['dap_an'] as $ma_bai => $dap_an) {
         $ma_bai = intval($ma_bai);
+        if (is_array($dap_an)) {
+            $dap_an = array_filter($dap_an, function($opt) use ($valid_options) {
+                return in_array($opt, $valid_options);
+            });
+            sort($dap_an);
+            $dap_an = implode(',', $dap_an);
+        }
         $dap_an = trim($dap_an);
+
         $diem = null;
         $trang_thai = 'Hoàn thành';
 
-        // Kiểm tra đã tồn tại chưa
+        $stmt_loai = $mysqli->prepare("SELECT loai_bai FROM bai_tap WHERE ma_bai = ?");
+        $stmt_loai->bind_param("i", $ma_bai);
+        $stmt_loai->execute();
+        $stmt_loai->bind_result($loai_bai);
+        $stmt_loai->fetch();
+        $stmt_loai->close();
+
+        if ($loai_bai === 'trac_nghiem') {
+            $stmt_dapan = $mysqli->prepare("SELECT dap_an_dung FROM trac_nghiem WHERE ma_bai = ?");
+            $stmt_dapan->bind_param("i", $ma_bai);
+            $stmt_dapan->execute();
+            $stmt_dapan->bind_result($dap_an_dung);
+            $stmt_dapan->fetch();
+            $stmt_dapan->close();
+
+            $dap_an_user = explode(',', $dap_an);
+            sort($dap_an_user);
+            $dap_an_user_str = implode(',', $dap_an_user);
+
+            $dap_an_dung_arr = explode(',', $dap_an_dung);
+            sort($dap_an_dung_arr);
+            $dap_an_dung_str = implode(',', $dap_an_dung_arr);
+
+            $diem = ($dap_an_user_str === $dap_an_dung_str) ? 10 : 0;
+        }
+
         $stmt_check = $mysqli->prepare("SELECT 1 FROM lam_bai_tap WHERE ma_bai = ? AND ma_kh = ?");
         $stmt_check->bind_param('ii', $ma_bai, $ma_kh);
         $stmt_check->execute();
         $stmt_check->store_result();
 
         if ($stmt_check->num_rows > 0) {
-            // Nếu đã tồn tại, cập nhật đáp án mới
             $stmt_update = $mysqli->prepare("UPDATE lam_bai_tap SET dap_an = ?, diem = ?, trang_thai = ?, thoi_gian_nop = NOW() WHERE ma_bai = ? AND ma_kh = ?");
             $stmt_update->bind_param('sissi', $dap_an, $diem, $trang_thai, $ma_bai, $ma_kh);
             $stmt_update->execute();
+            $stmt_update->close();
         } else {
-            // Nếu chưa có, thêm mới
             $stmt_insert = $mysqli->prepare("INSERT INTO lam_bai_tap (ma_bai, ma_kh, dap_an, diem, trang_thai) VALUES (?, ?, ?, ?, ?)");
             $stmt_insert->bind_param('iisis', $ma_bai, $ma_kh, $dap_an, $diem, $trang_thai);
             $stmt_insert->execute();
+            $stmt_insert->close();
         }
-        $stmt_check->close();   
+        $stmt_check->close();
     }
     $thong_bao = "Nộp bài thành công!";
 }
 
-// Lấy danh sách bài tập của buổi học
+$bai_tap_list = [];
 $sql = "SELECT * FROM bai_tap WHERE ma_buoi = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $ma_buoi);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Kiểm tra lỗi truy vấn
 while ($row = $result->fetch_assoc()) {
     $ma_bai = $row['ma_bai'];
     $loai_bai = $row['loai_bai'];
     $bai = null;
 
     if ($loai_bai === 'tu_luan') {
-        $stmt_tl = $mysqli->prepare("SELECT * FROM tu_luan WHERE ma_bai = ?");
+        $stmt_tl = $mysqli->prepare("SELECT ma_cau_tu_luan, ten_bai, noi_dung FROM tu_luan WHERE ma_bai = ?");
         $stmt_tl->bind_param("i", $ma_bai);
         $stmt_tl->execute();
         $result_tl = $stmt_tl->get_result();
 
         while ($bai = $result_tl->fetch_assoc()) {
             $bai_tap_list[] = [
-                'ma_cau' => $bai['ma_cau_tu_luan'], // bạn phải có cột này là PRIMARY KEY
+                'ma_cau' => $bai['ma_cau_tu_luan'],
                 'ma_bai' => $ma_bai,
                 'loai_bai' => $loai_bai,
                 'ten_bai' => $bai['ten_bai'],
                 'noi_dung' => $bai['noi_dung']
             ];
         }
+        $stmt_tl->close();
     } elseif ($loai_bai === 'trac_nghiem') {
-        $stmt_tn = $mysqli->prepare("SELECT * FROM trac_nghiem WHERE ma_bai = ?");
+        $stmt_tn = $mysqli->prepare("SELECT ma_cau_trac_nghiem, ten_bai, noi_dung, noi_dung_a, noi_dung_b, noi_dung_c, noi_dung_d, noi_dung_e, noi_dung_f, noi_dung_g, noi_dung_h, noi_dung_i, noi_dung_j, dap_an_dung FROM trac_nghiem WHERE ma_bai = ?");
         $stmt_tn->bind_param("i", $ma_bai);
         $stmt_tn->execute();
         $result_tn = $stmt_tn->get_result();
 
         while ($bai = $result_tn->fetch_assoc()) {
             $bai_tap_list[] = [
+                'ma_cau' => $bai['ma_cau_trac_nghiem'],
                 'ma_bai' => $ma_bai,
                 'loai_bai' => $loai_bai,
                 'ten_bai' => $bai['ten_bai'],
                 'noi_dung' => $bai['noi_dung'],
-                'dap_an' => $bai // chứa các nội dung A–J
+                'dap_an' => $bai
             ];
         }
-    }
-
-    if ($bai) {
-        $bai_tap_list[] = [
-            'ma_bai' => $ma_bai,
-            'loai_bai' => $loai_bai,
-            'ten_bai' => $bai['ten_bai'],
-            'noi_dung' => $bai['noi_dung'],
-            'dap_an' => $bai // dùng lại trong trac_nghiem nếu cần các đáp án A, B, C...
-        ];
+        $stmt_tn->close();
     }
 }
+$stmt->close();
 
-
-
-// Kiểm tra hoàn thành bài tập buổi học
 $stmt_total = $mysqli->prepare("SELECT COUNT(*) FROM bai_tap WHERE ma_buoi = ?");
 $stmt_total->bind_param('i', $ma_buoi);
 $stmt_total->execute();
@@ -128,16 +153,17 @@ $stmt_nop->close();
 
 $is_hoan_thanh = ($total_bai_tap > 0 && $total_bai_tap == $total_nop);
 
-// Hàm lấy id youtube
 function getYoutubeId($url) {
     if (preg_match('/youtu\.be\/([^\?&]+)/', $url, $matches)) return $matches[1];
     if (preg_match('/youtube\.com.*v=([^&]+)/', $url, $matches)) return $matches[1];
     return '';
 }
+
 $video_id = getYoutubeId($duong_dan_video);
 $is_youtube = !empty($video_id);
 $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
 ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -154,9 +180,8 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
             <?php if ($duong_dan_video): ?>
                 <?php if ($is_youtube): ?>
                     <iframe width="100%" height="420"
-                        src="https://www.youtube.com/embed/<?php echo htmlspecialchars($video_id); ?>"
-                        frameborder="0" allowfullscreen>
-                    </iframe>
+                            src="https://www.youtube.com/embed/<?php echo htmlspecialchars($video_id); ?>"
+                            frameborder="0" allowfullscreen></iframe>
                 <?php elseif ($is_file && file_exists($duong_dan_video)): ?>
                     <video width="100%" height="420" controls>
                         <source src="<?php echo htmlspecialchars($duong_dan_video); ?>">
@@ -168,9 +193,10 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
             <?php else: ?>
                 <p>Không có video cho buổi học này.</p>
             <?php endif; ?>
+
             <?php if (!empty($mo_ta_video)): ?>
                 <?php
-                    $max_length = 180; // số ký tự tối đa hiển thị ban đầu
+                    $max_length = 180;
                     $is_long = mb_strlen($mo_ta_video, 'UTF-8') > $max_length;
                     $mo_ta_short = $is_long ? mb_substr($mo_ta_video, 0, $max_length, 'UTF-8') . '...' : $mo_ta_video;
                 ?>
@@ -187,26 +213,25 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
                             <?php echo nl2br(htmlspecialchars($mo_ta_video)); ?>
                             <a href="javascript:void(0)" id="showLessBtn" style="color:#1976d2;text-decoration:underline;font-weight:500;">Ẩn bớt</a>
                         </span>
+                        <script>
+                            const showMoreBtn = document.getElementById('showMoreBtn');
+                            const showLessBtn = document.getElementById('showLessBtn');
+                            const moTaShort = document.getElementById('moTaShort');
+                            const moTaFull = document.getElementById('moTaFull');
+                            showMoreBtn.onclick = function () {
+                                moTaShort.style.display = 'none';
+                                moTaFull.style.display = 'inline';
+                            };
+                            showLessBtn.onclick = function () {
+                                moTaShort.style.display = 'inline';
+                                moTaFull.style.display = 'none';
+                            };
+                        </script>
                     <?php endif; ?>
                 </div>
-                <?php if ($is_long): ?>
-                <script>
-                    const showMoreBtn = document.getElementById('showMoreBtn');
-                    const showLessBtn = document.getElementById('showLessBtn');
-                    const moTaShort = document.getElementById('moTaShort');
-                    const moTaFull = document.getElementById('moTaFull');
-                    showMoreBtn.onclick = function() {
-                        moTaShort.style.display = 'none';
-                        moTaFull.style.display = 'inline';
-                    };
-                    showLessBtn.onclick = function() {
-                        moTaShort.style.display = 'inline';
-                        moTaFull.style.display = 'none';
-                    };
-                </script>
-                <?php endif; ?>
             <?php endif; ?>
         </div>
+
         <div class="homework-side">
             <h2>Bài tập của buổi học</h2>
 
@@ -215,17 +240,17 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
             <?php endif; ?>
 
             <?php if (!empty($bai_tap_list)): ?>
-                <form method="post">
+                <form method="post" onsubmit="return validateForm()">
                     <?php foreach ($bai_tap_list as $bai): ?>
                         <div class="homework-item">
                             <h3><?php echo htmlspecialchars($bai['ten_bai']); ?></h3>
                             <div class="content"><?php echo nl2br(htmlspecialchars($bai['noi_dung'])); ?></div>
 
                             <?php if ($bai['loai_bai'] === 'tu_luan'): ?>
-                                <textarea name="dap_an[<?php echo $bai['ma_bai']; ?>]" rows="4" style="width:100%;padding:7px;" placeholder="Nhập đáp án của bạn..." required></textarea>
+                                <textarea name="dap_an[<?php echo $bai['ma_bai']; ?>]" rows="4" style="width:100%;padding:7px;" placeholder="Nhập đáp án của bạn..."></textarea>
 
                             <?php elseif ($bai['loai_bai'] === 'trac_nghiem'): ?>
-                                <?php foreach (range('A', 'J') as $opt): 
+                                <?php foreach (range('A', 'J') as $opt):
                                     $field = 'noi_dung_' . strtolower($opt);
                                     if (!empty($bai['dap_an'][$field])): ?>
                                         <label>
@@ -247,7 +272,23 @@ $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
                 <div class="alert-message" style="color:green;">Bạn đã hoàn thành tất cả bài tập của buổi học này!</div>
             <?php endif; ?>
         </div>
-
     </div>
+
+    <script>
+        function validateForm() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const textareas = document.querySelectorAll('textarea');
+            let valid = false;
+            textareas.forEach(textarea => {
+                if (textarea.value.trim()) valid = true;
+            });
+            if (checkboxes.length > 0) valid = true;
+            if (!valid) {
+                alert('Vui lòng chọn ít nhất một đáp án hoặc nhập đáp án tự luận!');
+                return false;
+            }
+            return true;
+        }
+    </script>
 </body>
 </html>

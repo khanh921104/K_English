@@ -1,0 +1,172 @@
+
+/* Container chính */
+.manage_course_container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header với các nút điều hướng */
+.manage_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Nút quay lại */
+.btn-back-home {
+    text-decoration: none;
+    color: #1976d2;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+.btn-back-home:hover {
+    color: #1565c0;
+}
+
+/* Các nút thao tác */
+.btn-add, .btn-edit, .btn-delete {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.btn-add {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+}
+.btn-add:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+}
+.btn-edit {
+    background: #fbc02d;
+    color: #000;
+}
+.btn-edit:hover {
+    background: #f9a825;
+    transform: translateY(-1px);
+}
+.btn-delete {
+    background: #d32f2f;
+    color: #fff;
+}
+.btn-delete:hover {
+    background: #b71c1c;
+    transform: translateY(-1px);
+}
+
+/* Overlay cho form thêm/sửa */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Nội dung overlay */
+.overlay-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px;
+    max-width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin: auto;
+}
+
+/* Nút đóng form */
+.close-btn {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: color 0.3s ease;
+}
+.close-btn:hover {
+    color: #d32f2f;
+}
+
+/* Thông báo lỗi */
+.alert-message {
+    padding: 10px;
+    background: #f5f7fa;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+/* Bảng hiển thị dữ liệu */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background: #f5f7fa;
+    font-weight: 600;
+}
+td {
+    background: #fff;
+}
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Các trường nhập liệu */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 500;
+    color: #333;
+}
+input, textarea, select {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #90caf9;
+    margin-top: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: #1976d2;
+    outline: none;
+}
+textarea {
+    resize: vertical;
+}
+
+/* Nút trong form */
+button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: #1976d2;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+}

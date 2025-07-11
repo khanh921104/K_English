@@ -107,13 +107,40 @@ if (isset($_POST['dang_ky']) && $ma_kh && $id) {
                     ?>
                         <div class="sessions-flex">
                             <?php while ($session = $result_sessions->fetch_assoc()): ?>
+                                <?php
+                                    // Lấy tổng điểm bài tập của buổi học này
+                                    $ma_buoi_ht = intval($session['ma_buoi']);
+                                    $tong_diem = 0;
+                                    $so_bai = 0;
+
+                                    $stmt_diem = $mysqli->prepare("
+                                        SELECT diem 
+                                        FROM lam_bai_tap 
+                                        WHERE ma_kh = ? AND ma_bai IN (SELECT ma_bai FROM bai_tap WHERE ma_buoi = ?)
+                                    ");
+                                    $stmt_diem->bind_param("ii", $ma_kh, $ma_buoi_ht);
+                                    $stmt_diem->execute();
+                                    $result_diem = $stmt_diem->get_result();
+                                    while ($row_diem = $result_diem->fetch_assoc()) {
+                                        $tong_diem += floatval($row_diem['diem']);
+                                        $so_bai++;
+                                    }
+                                    $stmt_diem->close();
+
+                                    $diem_tb = ($so_bai > 0) ? round($tong_diem / $so_bai, 2) : 'Chưa có điểm';
+                                ?>
                                 <div class="session-item">
                                     <a href="video.php?id=<?php echo urlencode($session['ma_buoi']); ?>" class="session-title">
                                         <?php echo htmlspecialchars($session['ten_buoi']); ?>
                                     </a>
                                     <span class="session-content"><?php echo nl2br(htmlspecialchars($session['noi_dung'])); ?></span>
+                                    <div class="session-score">
+                                        
+                                        <?php echo is_numeric($diem_tb) ? $diem_tb . '/10' : $diem_tb; ?>
+                                    </div>
                                 </div>
                             <?php endwhile; ?>
+
                         </div>
                     <?php else: ?>
                         <p>Chưa có buổi học nào cho khóa này.</p>
