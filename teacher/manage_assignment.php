@@ -43,6 +43,7 @@ if (isset($_POST['add_bai_tap'])) {
                 $stmt2 = $mysqli->prepare("INSERT INTO tu_luan (ma_bai, ten_bai, noi_dung, huong_dan_cham) VALUES (?, ?, ?, ?)");
                 $stmt2->bind_param('isss', $ma_bai, $ten_bai, $noi_dung, $huong_dan_cham);
                 $stmt2->execute();
+                $stmt2->close();
             } elseif ($type == 'trac_nghiem') {
                 $noi_dung_a = trim($_POST['noi_dung_a'] ?? '');
                 $noi_dung_b = trim($_POST['noi_dung_b'] ?? '');
@@ -54,14 +55,28 @@ if (isset($_POST['add_bai_tap'])) {
                 $noi_dung_h = trim($_POST['noi_dung_h'] ?? '');
                 $noi_dung_i = trim($_POST['noi_dung_i'] ?? '');
                 $noi_dung_j = trim($_POST['noi_dung_j'] ?? '');
-                $dap_an_dung = !empty($_POST['dap_an_dung']) ? implode(',', $_POST['dap_an_dung']) : '';
-                if ($noi_dung_a && $noi_dung_b && $noi_dung_c && $noi_dung_d && $dap_an_dung) {
+                $dap_an_dung = !empty($_POST['dap_an_dung']) ? $_POST['dap_an_dung'] : [];
+
+                // Kiểm tra ít nhất một phương án được nhập
+                $options = [$noi_dung_a, $noi_dung_b, $noi_dung_c, $noi_dung_d, $noi_dung_e, $noi_dung_f, $noi_dung_g, $noi_dung_h, $noi_dung_i, $noi_dung_j];
+                $has_option = array_filter($options, function($opt) { return !empty($opt); });
+                $valid_options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                $option_map = array_combine($valid_options, $options);
+
+                // Kiểm tra đáp án đúng hợp lệ
+                $valid_dap_an = array_filter($dap_an_dung, function($opt) use ($option_map) {
+                    return in_array($opt, array_keys(array_filter($option_map, function($val) { return !empty($val); })));
+                });
+
+                if (!empty($has_option) && !empty($valid_dap_an)) {
+                    $dap_an_dung_str = implode(',', $valid_dap_an);
                     $stmt2 = $mysqli->prepare("INSERT INTO trac_nghiem (ma_bai, ten_bai, noi_dung, noi_dung_a, noi_dung_b, noi_dung_c, noi_dung_d, noi_dung_e, noi_dung_f, noi_dung_g, noi_dung_h, noi_dung_i, noi_dung_j, dap_an_dung) 
                                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt2->bind_param('isssssssssssss', $ma_bai, $ten_bai, $noi_dung, $noi_dung_a, $noi_dung_b, $noi_dung_c, $noi_dung_d, $noi_dung_e, $noi_dung_f, $noi_dung_g, $noi_dung_h, $noi_dung_i, $noi_dung_j, $dap_an_dung);
+                    $stmt2->bind_param('isssssssssssss', $ma_bai, $ten_bai, $noi_dung, $noi_dung_a, $noi_dung_b, $noi_dung_c, $noi_dung_d, $noi_dung_e, $noi_dung_f, $noi_dung_g, $noi_dung_h, $noi_dung_i, $noi_dung_j, $dap_an_dung_str);
                     $stmt2->execute();
+                    $stmt2->close();
                 } else {
-                    $thong_bao = "Vui lòng nhập đầy đủ ít nhất 4 đáp án (A, B, C, D) và chọn đáp án đúng!";
+                    $thong_bao = "Vui lòng nhập ít nhất một phương án và chọn đáp án đúng hợp lệ!";
                     $show_form = true;
                 }
             }
@@ -73,6 +88,7 @@ if (isset($_POST['add_bai_tap'])) {
             $thong_bao = "Lỗi khi thêm bài tập: " . $mysqli->error;
             $show_form = true;
         }
+        $stmt->close();
     } else {
         $thong_bao = "Vui lòng nhập đầy đủ thông tin!";
         $show_form = true;
@@ -100,6 +116,7 @@ if (isset($_POST['edit_bai_tap'])) {
                 $stmt2 = $mysqli->prepare("INSERT INTO tu_luan (ma_bai, ten_bai, noi_dung, huong_dan_cham) VALUES (?, ?, ?, ?)");
                 $stmt2->bind_param('isss', $ma_bai, $ten_bai, $noi_dung, $huong_dan_cham);
                 $stmt2->execute();
+                $stmt2->close();
             } elseif ($type == 'trac_nghiem') {
                 $noi_dung_a = trim($_POST['edit_noi_dung_a'] ?? '');
                 $noi_dung_b = trim($_POST['edit_noi_dung_b'] ?? '');
@@ -111,14 +128,28 @@ if (isset($_POST['edit_bai_tap'])) {
                 $noi_dung_h = trim($_POST['edit_noi_dung_h'] ?? '');
                 $noi_dung_i = trim($_POST['edit_noi_dung_i'] ?? '');
                 $noi_dung_j = trim($_POST['edit_noi_dung_j'] ?? '');
-                $dap_an_dung = !empty($_POST['edit_dap_an_dung']) ? implode(',', $_POST['edit_dap_an_dung']) : '';
-                if ($noi_dung_a && $noi_dung_b && $noi_dung_c && $noi_dung_d && $dap_an_dung) {
+                $dap_an_dung = !empty($_POST['edit_dap_an_dung']) ? $_POST['edit_dap_an_dung'] : [];
+
+                // Kiểm tra ít nhất một phương án được nhập
+                $options = [$noi_dung_a, $noi_dung_b, $noi_dung_c, $noi_dung_d, $noi_dung_e, $noi_dung_f, $noi_dung_g, $noi_dung_h, $noi_dung_i, $noi_dung_j];
+                $has_option = array_filter($options, function($opt) { return !empty($opt); });
+                $valid_options = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                $option_map = array_combine($valid_options, $options);
+
+                // Kiểm tra đáp án đúng hợp lệ
+                $valid_dap_an = array_filter($dap_an_dung, function($opt) use ($option_map) {
+                    return in_array($opt, array_keys(array_filter($option_map, function($val) { return !empty($val); })));
+                });
+
+                if (!empty($has_option) && !empty($valid_dap_an)) {
+                    $dap_an_dung_str = implode(',', $valid_dap_an);
                     $stmt2 = $mysqli->prepare("INSERT INTO trac_nghiem (ma_bai, ten_bai, noi_dung, noi_dung_a, noi_dung_b, noi_dung_c, noi_dung_d, noi_dung_e, noi_dung_f, noi_dung_g, noi_dung_h, noi_dung_i, noi_dung_j, dap_an_dung) 
                                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt2->bind_param('isssssssssssss', $ma_bai, $ten_bai, $noi_dung, $noi_dung_a, $noi_dung_b, $noi_dung_c, $noi_dung_d, $noi_dung_e, $noi_dung_f, $noi_dung_g, $noi_dung_h, $noi_dung_i, $noi_dung_j, $dap_an_dung);
+                    $stmt2->bind_param('isssssssssssss', $ma_bai, $ten_bai, $noi_dung, $noi_dung_a, $noi_dung_b, $noi_dung_c, $noi_dung_d, $noi_dung_e, $noi_dung_f, $noi_dung_g, $noi_dung_h, $noi_dung_i, $noi_dung_j, $dap_an_dung_str);
                     $stmt2->execute();
+                    $stmt2->close();
                 } else {
-                    $thong_bao = "Vui lòng nhập đầy đủ ít nhất 4 đáp án (A, B, C, D) và chọn đáp án đúng!";
+                    $thong_bao = "Vui lòng nhập ít nhất một phương án và chọn đáp án đúng hợp lệ!";
                 }
             }
             if (!$thong_bao) {
@@ -128,6 +159,7 @@ if (isset($_POST['edit_bai_tap'])) {
         } else {
             $thong_bao = "Lỗi khi cập nhật bài tập: " . $mysqli->error;
         }
+        $stmt->close();
     } else {
         $thong_bao = "Vui lòng nhập đầy đủ thông tin!";
     }
@@ -139,6 +171,7 @@ if (isset($_GET['delete_bai'])) {
     $stmt = $mysqli->prepare("DELETE FROM bai_tap WHERE ma_bai = ?");
     $stmt->bind_param('i', $ma_bai);
     $stmt->execute();
+    $stmt->close();
     header("Location: manage_assignment.php?ma_buoi=$ma_buoi");
     exit;
 }
@@ -157,6 +190,7 @@ $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $ma_buoi);
 $stmt->execute();
 $result = $stmt->get_result();
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -166,187 +200,7 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Bài Tập<?php echo $buoi ? ' - ' . htmlspecialchars($buoi['ten_buoi']) : ''; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Container chính */
-        .manage_course_container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Header với các nút điều hướng */
-        .manage_header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        /* Nút quay lại */
-        .btn-back-home {
-            text-decoration: none;
-            color: #1976d2;
-            font-size: 24px;
-            transition: color 0.3s ease;
-        }
-        .btn-back-home:hover {
-            color: #1565c0;
-        }
-
-        /* Các nút thao tác */
-        .btn-add, .btn-edit, .btn-delete {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .btn-add {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-        }
-        .btn-add:hover {
-            background: #1565c0;
-            transform: translateY(-1px);
-        }
-        .btn-edit {
-            background: #fbc02d;
-            color: #000;
-        }
-        .btn-edit:hover {
-            background: #f9a825;
-            transform: translateY(-1px);
-        }
-        .btn-delete {
-            background: #d32f2f;
-            color: #fff;
-        }
-        .btn-delete:hover {
-            background: #b71c1c;
-            transform: translateY(-1px);
-        }
-
-        /* Overlay cho form thêm/sửa */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        /* Nội dung overlay */
-        .overlay-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 500px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            margin: auto;
-        }
-
-        /* Nút đóng form */
-        .close-btn {
-            float: right;
-            cursor: pointer;
-            font-size: 20px;
-            color: #333;
-            transition: color 0.3s ease;
-        }
-        .close-btn:hover {
-            color: #d32f2f;
-        }
-
-        /* Thông báo lỗi */
-        .alert-message {
-            padding: 10px;
-            background: #f5f7fa;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        /* Bảng hiển thị dữ liệu */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background: #f5f7fa;
-            font-weight: 600;
-        }
-        td {
-            background: #fff;
-        }
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        /* Các trường nhập liệu */
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: 500;
-            color: #333;
-        }
-        input, textarea, select {
-            width: 100%;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #90caf9;
-            margin-top: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-        input:focus, textarea:focus, select:focus {
-            border-color: #1976d2;
-            outline: none;
-        }
-        textarea {
-            resize: vertical;
-        }
-
-        /* Nút trong form */
-        button {
-            margin-top: 10px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            background: #1976d2;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        button:hover {
-            background: #1565c0;
-            transform: translateY(-1px);
-        }
-
-        /* Thông báo lỗi trong form */
-        .error {
-            color: #d32f2f;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="manage_assignment.css">
 </head>
 <body>
     <?php include 'header.php'; ?>
@@ -393,7 +247,7 @@ $result = $stmt->get_result();
                                             <?php echo strtoupper($opt); ?>: <?php echo htmlspecialchars($row["noi_dung_$opt"]); ?><br>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
-                                    Đáp án: <?php echo htmlspecialchars($row['dap_an_dung'] ?? ''); ?>
+                                    <strong><span style="color:green;">Đáp án: <?php echo htmlspecialchars($row['dap_an_dung'] ?? ''); ?></span></strong>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -450,24 +304,24 @@ $result = $stmt->get_result();
                 </div>
                 <div id="add_trac_nghiem_fields" style="display:none;">
                     <label>Nội dung A:</label>
-                    <input type="text" name="noi_dung_a" required>
+                    <input type="text" name="noi_dung_a">
                     <label>Nội dung B:</label>
-                    <input type="text" name="noi_dung_b" required>
+                    <input type="text" name="noi_dung_b">
                     <label>Nội dung C:</label>
-                    <input type="text" name="noi_dung_c" required>
+                    <input type="text" name="noi_dung_c">
                     <label>Nội dung D:</label>
-                    <input type="text" name="noi_dung_d" required>
-                    <label>Nội dung E (tùy chọn):</label>
+                    <input type="text" name="noi_dung_d">
+                    <label>Nội dung E:</label>
                     <input type="text" name="noi_dung_e">
-                    <label>Nội dung F (tùy chọn):</label>
+                    <label>Nội dung F:</label>
                     <input type="text" name="noi_dung_f">
-                    <label>Nội dung G (tùy chọn):</label>
+                    <label>Nội dung G:</label>
                     <input type="text" name="noi_dung_g">
-                    <label>Nội dung H (tùy chọn):</label>
+                    <label>Nội dung H:</label>
                     <input type="text" name="noi_dung_h">
-                    <label>Nội dung I (tùy chọn):</label>
+                    <label>Nội dung I:</label>
                     <input type="text" name="noi_dung_i">
-                    <label>Nội dung J (tùy chọn):</label>
+                    <label>Nội dung J:</label>
                     <input type="text" name="noi_dung_j">
                     <label>Đáp án đúng:</label>
                     <select name="dap_an_dung[]" id="add_dap_an_dung" multiple>
@@ -482,7 +336,7 @@ $result = $stmt->get_result();
                         <option value="I">I</option>
                         <option value="J">J</option>
                     </select>
-                    <div id="add_dap_an_dung_error" class="error">Vui lòng chọn ít nhất một đáp án đúng!</div>
+                    <div id="add_dap_an_dung_error" class="error">Vui lòng chọn ít nhất một đáp án đúng hợp lệ!</div>
                 </div>
                 <button type="submit" name="add_bai_tap" class="btn-add">Thêm</button>
             </form>
@@ -511,24 +365,24 @@ $result = $stmt->get_result();
                 </div>
                 <div id="edit_trac_nghiem_fields" style="display:none;">
                     <label>Nội dung A:</label>
-                    <input type="text" name="edit_noi_dung_a" id="edit_noi_dung_a" required>
+                    <input type="text" name="edit_noi_dung_a" id="edit_noi_dung_a">
                     <label>Nội dung B:</label>
-                    <input type="text" name="edit_noi_dung_b" id="edit_noi_dung_b" required>
+                    <input type="text" name="edit_noi_dung_b" id="edit_noi_dung_b">
                     <label>Nội dung C:</label>
-                    <input type="text" name="edit_noi_dung_c" id="edit_noi_dung_c" required>
+                    <input type="text" name="edit_noi_dung_c" id="edit_noi_dung_c">
                     <label>Nội dung D:</label>
-                    <input type="text" name="edit_noi_dung_d" id="edit_noi_dung_d" required>
-                    <label>Nội dung E (tùy chọn):</label>
+                    <input type="text" name="edit_noi_dung_d" id="edit_noi_dung_d">
+                    <label>Nội dung E:</label>
                     <input type="text" name="edit_noi_dung_e" id="edit_noi_dung_e">
-                    <label>Nội dung F (tùy chọn):</label>
+                    <label>Nội dung F:</label>
                     <input type="text" name="edit_noi_dung_f" id="edit_noi_dung_f">
-                    <label>Nội dung G (tùy chọn):</label>
+                    <label>Nội dung G:</label>
                     <input type="text" name="edit_noi_dung_g" id="edit_noi_dung_g">
-                    <label>Nội dung H (tùy chọn):</label>
+                    <label>Nội dung H:</label>
                     <input type="text" name="edit_noi_dung_h" id="edit_noi_dung_h">
-                    <label>Nội dung I (tùy chọn):</label>
+                    <label>Nội dung I:</label>
                     <input type="text" name="edit_noi_dung_i" id="edit_noi_dung_i">
-                    <label>Nội dung J (tùy chọn):</label>
+                    <label>Nội dung J:</label>
                     <input type="text" name="edit_noi_dung_j" id="edit_noi_dung_j">
                     <label>Đáp án đúng:</label>
                     <select name="edit_dap_an_dung[]" id="edit_dap_an_dung" multiple>
@@ -543,7 +397,7 @@ $result = $stmt->get_result();
                         <option value="I">I</option>
                         <option value="J">J</option>
                     </select>
-                    <div id="edit_dap_an_dung_error" class="error">Vui lòng chọn ít nhất một đáp án đúng!</div>
+                    <div id="edit_dap_an_dung_error" class="error">Vui lòng chọn ít nhất một đáp án đúng hợp lệ!</div>
                 </div>
                 <button type="submit" name="edit_bai_tap" class="btn-add">Cập nhật</button>
             </form>
@@ -577,7 +431,32 @@ $result = $stmt->get_result();
             if (type === 'trac_nghiem') {
                 const dapAn = document.getElementById('add_dap_an_dung');
                 const error = document.getElementById('add_dap_an_dung_error');
-                if (dapAn.selectedOptions.length === 0) {
+                const inputs = ['noi_dung_a', 'noi_dung_b', 'noi_dung_c', 'noi_dung_d', 'noi_dung_e', 'noi_dung_f', 'noi_dung_g', 'noi_dung_h', 'noi_dung_i', 'noi_dung_j'];
+                const validOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                let hasOption = false;
+                let validDapAn = false;
+
+                // Kiểm tra ít nhất một phương án được nhập
+                for (let input of inputs) {
+                    if (document.getElementsByName(input)[0].value.trim()) {
+                        hasOption = true;
+                        break;
+                    }
+                }
+
+                // Kiểm tra đáp án đúng hợp lệ
+                const selectedDapAn = Array.from(dapAn.selectedOptions).map(opt => opt.value);
+                for (let opt of selectedDapAn) {
+                    const index = validOptions.indexOf(opt);
+                    if (document.getElementsByName(inputs[index])[0].value.trim()) {
+                        validDapAn = true;
+                    } else {
+                        validDapAn = false;
+                        break;
+                    }
+                }
+
+                if (!hasOption || !validDapAn || selectedDapAn.length === 0) {
                     error.style.display = 'block';
                     return false;
                 } else {
@@ -638,7 +517,32 @@ $result = $stmt->get_result();
             if (type === 'trac_nghiem') {
                 const dapAn = document.getElementById('edit_dap_an_dung');
                 const error = document.getElementById('edit_dap_an_dung_error');
-                if (dapAn.selectedOptions.length === 0) {
+                const inputs = ['edit_noi_dung_a', 'edit_noi_dung_b', 'edit_noi_dung_c', 'edit_noi_dung_d', 'edit_noi_dung_e', 'edit_noi_dung_f', 'edit_noi_dung_g', 'edit_noi_dung_h', 'edit_noi_dung_i', 'edit_noi_dung_j'];
+                const validOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                let hasOption = false;
+                let validDapAn = false;
+
+                // Kiểm tra ít nhất một phương án được nhập
+                for (let input of inputs) {
+                    if (document.getElementsByName(input)[0].value.trim()) {
+                        hasOption = true;
+                        break;
+                    }
+                }
+
+                // Kiểm tra đáp án đúng hợp lệ
+                const selectedDapAn = Array.from(dapAn.selectedOptions).map(opt => opt.value);
+                for (let opt of selectedDapAn) {
+                    const index = validOptions.indexOf(opt);
+                    if (document.getElementsByName(inputs[index])[0].value.trim()) {
+                        validDapAn = true;
+                    } else {
+                        validDapAn = false;
+                        break;
+                    }
+                }
+
+                if (!hasOption || !validDapAn || selectedDapAn.length === 0) {
                     error.style.display = 'block';
                     return false;
                 } else {

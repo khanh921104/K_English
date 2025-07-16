@@ -1,153 +1,171 @@
-
-main{
-    background: #f5f5f5;
-    display: flex;
-    
-    min-height: 100vh;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+    margin: 0;
+    padding: 0;
 }
+
+.container {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .tab {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    
-    align-items: center;
-    max-width: 30%;
-    background-color: #1565c0;
-}
-
-.tab a{
-    margin:  20px 20px 20px 20px;
-    
-    color: #fff;
-}
-.teacher-info {
-            /* max-width: 70%; */
-            margin: 0 0 0 1rem;
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 24px rgba(21,101,192,0.10);
-            padding: 32px 28px;
-            font-size: 1.1rem;
-    }
-        .teacher-info h2 {
-            color: #1565c0;
-            margin-bottom: 18px;
-        }
-        .teacher-info .label {
-            color: #1976d2;
-            font-weight: 500;
-        }
-        .teacher-info .value {
-            color: #333;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-.btn-logout {
-    display: inline-block;
-    /* float: center; */
-    margin: 18px 32px 0 0;
-    padding: 8px 20px;
-    background: #ef5350;
-    color: #fff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    transition: background 0.2s;
-}
-.btn-logout:hover {
-    background: #b71c1c;
-}
-.btn-update {
-    margin-top: 16px;
-    padding: 8px 22px;
-    background: #1976d2;
-    color: #fff;
-    border: none;
-    border-radius: 7px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.btn-update:hover {
-    background: #0d47a1;
-}
-.teacher-info {
-    max-width: 600px;
-    margin: 40px auto;
-   
-    background-image: url(../back.png);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', sans-serif;
-}
-
-.details {
+    gap: 10px;
     margin-bottom: 20px;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    background-color: #dcdde1;
+    color: #2f3640;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.tab-link:hover {
+    background-color: #7f8fa6;
+    color: white;
+}
+
+.tab-link.active {
+    background-color: #40739e;
+    color: white;
+}
+
+.card {
+    padding: 20px;
+    background-color: #fefefe;
+    border-radius: 10px;
+    border: 1px solid #dcdde1;
+}
+
+.info-row {
+    margin-bottom: 15px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
 }
 
 .label {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 6px;
+    font-weight: bold;
+    color: #2f3640;
 }
 
 .value {
-    color: #555;
-    padding: 10px 14px;
-    background-color: #f5f5f5;
-    border-radius: 6px;
+    color: #353b48;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2f3640;
 }
 
 input[type="text"],
 input[type="email"] {
-    padding: 10px 14px;
-    border: 1px solid #ccc;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dcdde1;
     border-radius: 6px;
-    font-size: 15px;
-    transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus {
-    border-color: #4a90e2;
-    outline: none;
+.button-group {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
 }
 
-.btn-update,
-.btn-cancel {
-    display: inline-block;
+.btn {
     padding: 10px 20px;
-    margin-top: 10px;
-    margin-right: 10px;
-    border: none;
     border-radius: 6px;
     text-decoration: none;
-    font-size: 15px;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    transition: background 0.3s;
 }
 
-.btn-update {
-    background-color: #4CAF50;
+.btn-edit {
+    background-color: #0097e6;
     color: white;
 }
 
-.btn-update:hover {
-    background-color: #45a049;
+.btn-edit:hover {
+    background-color: #40739e;
+}
+
+.btn-save {
+    background-color: #44bd32;
+    color: white;
+}
+
+.btn-save:hover {
+    background-color: #4cd137;
 }
 
 .btn-cancel {
-    background-color: #f44336;
+    background-color: #e1b12c;
     color: white;
 }
 
 .btn-cancel:hover {
-    background-color: #e53935;
+    background-color: #fbc531;
+}
+
+.btn-logout {
+    display: block;
+    text-align: center;
+    margin: 30px auto;
+    background-color: #e84118;
+    color: white;
+    width: 120px;
+}
+
+.btn-logout:hover {
+    background-color: #c23616;
+}
+
+.error-text {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+}
+.tab {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.tab-link.active {
+    background: #4CAF50;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }

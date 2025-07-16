@@ -170,3 +170,8 @@ button:hover {
     background: #1565c0;
     transform: translateY(-1px);
 }
+.edit_trac_nghiem_fields label{
+    margin-top: 10px;
+    font-weight: 500;
+    color: #333;
+}

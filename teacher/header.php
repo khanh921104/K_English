@@ -1,3 +1,20 @@
+<?php
+if (!isset($mysqli)) {
+    include '../db.php'; // hoặc chỉnh lại đường dẫn đúng nếu folder khác
+}
+
+$ma_gv = $_SESSION['ma_kh'];
+
+$count_tb = 0;
+$stmt_tb = $mysqli->prepare("SELECT COUNT(*) FROM thong_bao WHERE ma_nguoi_nhan = ? AND trang_thai = 'chưa đọc' AND loai = 'cham_bai'");
+$stmt_tb->bind_param("i", $ma_gv);
+$stmt_tb->execute();
+$stmt_tb->bind_result($count_tb);
+$stmt_tb->fetch();
+$stmt_tb->close();
+?>
+
+
 <link rel="stylesheet" href="header_style.css">
 <!-- filepath: c:\xampp\htdocs\K_English\admin\header.php -->
 <header>
@@ -5,7 +22,23 @@
         <h1><a href="home.php">K-English</a></h1>
         <nav>
             <ul>
-                <li><a href="grade_assignments.php">Chấm điểm</a></li>
+                <li style="position: relative; display: inline-block;">
+                    <a href="grade_assignments.php" style="position: relative; display: inline-block;">
+                        Chấm điểm
+                        <?php if ($count_tb > 0): ?>
+                            <span style="
+                                position: absolute;
+                                top: -5px;
+                                right: -10px;
+                                width: 10px;
+                                height: 10px;
+                                background-color: red;
+                                border-radius: 50%;
+                                display: inline-block;">
+                            </span>
+                        <?php endif; ?>
+                    </a>
+                </li>
                 <li><a href="add_course.php">Thêm khóa học</a></li>
                 <li><a href="teacher_information.php">Tài khoản</a></li>
             </ul>

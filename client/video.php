@@ -162,6 +162,68 @@ function getYoutubeId($url) {
 $video_id = getYoutubeId($duong_dan_video);
 $is_youtube = !empty($video_id);
 $is_file = preg_match('/\.(mp4|webm|ogg)$/i', $duong_dan_video);
+
+//thong bao cham bai 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dap_an']) && is_array($_POST['dap_an'])) {
+    // Lấy ma_khoa từ ma_buoi
+    $stmt_khoa = $mysqli->prepare("SELECT ma_khoa FROM buoi_hoc WHERE ma_buoi = ?");
+    $stmt_khoa->bind_param("i", $ma_buoi);
+    $stmt_khoa->execute();
+    $stmt_khoa->bind_result($ma_khoa);
+    $stmt_khoa->fetch();
+    $stmt_khoa->close();
+
+    if (!$ma_khoa) {
+        echo "❌ Không tìm thấy khóa học của buổi học.";
+        exit;
+    }
+
+    // Tìm giáo viên chủ nhiệm của khóa học
+    $stmt_gv = $mysqli->prepare("SELECT ma_kh FROM giao_vien_tao_khoa_hoc WHERE ma_khoa = ?");
+    $stmt_gv->bind_param('i', $ma_khoa);
+    $stmt_gv->execute();
+    $stmt_gv->bind_result($ma_gv);
+    $stmt_gv->fetch();
+    $stmt_gv->close();
+
+    if (!$ma_gv) {
+        echo "❌ Không tìm thấy giáo viên quản lý khóa học.";
+        exit;
+    }
+
+
+    if (empty($ma_gv)) {
+        exit('Không tìm thấy giáo viên quản lý khóa học.');
+    }
+
+    foreach ($_POST['dap_an'] as $ma_bai => $dap_an) {
+        $ma_bai = intval($ma_bai);
+        $dap_an = trim($dap_an);
+
+        // Kiểm tra bài tập là tự luận
+        $stmt = $mysqli->prepare("SELECT loai_bai FROM bai_tap WHERE ma_bai = ?");
+        $stmt->bind_param("i", $ma_bai);
+        $stmt->execute();
+        $stmt->bind_result($loai_bai);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($loai_bai === 'tu_luan' && $dap_an !== '') {
+            // Gửi thông báo
+            $noi_dung = "Học viên ID $ma_kh vừa nộp bài tự luận mã bài $ma_bai thuộc buổi học $ma_buoi.";
+            $loai_tb = 'cham_bai';
+            $trang_thai = 'chưa đọc';
+
+            $stmt_tb = $mysqli->prepare("INSERT INTO thong_bao (ma_nguoi_gui, ma_nguoi_nhan, ma_khoa, ma_buoi, loai, noi_dung, trang_thai) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt_tb->bind_param("iiiisss", $ma_kh, $ma_gv, $ma_khoa, $ma_buoi, $loai_tb, $noi_dung, $trang_thai);
+            $stmt_tb->execute();
+            $stmt_tb->close();
+        }
+    }
+
+    echo "✅ Đã nộp bài và gửi thông báo chấm bài tự luận.";
+}
 ?>
 
 <!DOCTYPE html>

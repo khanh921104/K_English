@@ -31,6 +31,7 @@ CREATE TABLE buoi_hoc (
     noi_dung TEXT,
     ngay_hoc DATE,
     ma_khoa INT,
+    thoi_luong INT,
     FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa)
         ON DELETE CASCADE
         ON UPDATE CASCADE
@@ -156,6 +157,23 @@ CREATE TABLE lich_su_hoc (
     PRIMARY KEY (ma_kh, ma_video),
     FOREIGN KEY (ma_kh) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE,
     FOREIGN KEY (ma_video) REFERENCES video_bai_giang(ma_video) ON DELETE CASCADE
+);
+
+CREATE TABLE thong_bao (
+    ma_tb INT AUTO_INCREMENT PRIMARY KEY,
+    ma_nguoi_gui INT NOT NULL, -- ai gửi (học viên hoặc giáo viên)
+    ma_nguoi_nhan INT NOT NULL, -- ai nhận (giáo viên hoặc học viên)
+    ma_khoa INT NOT NULL, -- khóa học liên quan
+    ma_buoi INT, -- buổi học cụ thể (có thể null)
+    loai ENUM('cham_bai', 'thong_bao_chung', 'phan_hoi') NOT NULL,
+    noi_dung TEXT NOT NULL,
+    trang_thai ENUM('chưa đọc', 'đã đọc') DEFAULT 'chưa đọc',
+    ngay_gui DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (ma_nguoi_gui) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ma_nguoi_nhan) REFERENCES khach_hang(ma_kh) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ma_khoa) REFERENCES khoa_hoc(ma_khoa) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ma_buoi) REFERENCES buoi_hoc(ma_buoi) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 
